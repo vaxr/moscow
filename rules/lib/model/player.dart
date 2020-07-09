@@ -1,0 +1,1 @@
+enum Faction { Soviet, German }
