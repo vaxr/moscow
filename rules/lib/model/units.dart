@@ -1,22 +1,30 @@
 import 'package:moscow_rules/model/player.dart';
-import 'package:moscow_rules/model/map.dart';
 
 enum UnitType { Infantry, Panzer }
 enum UnitSize { Corps, Army }
-enum UnitStatus { FullStrength, HalfStrength, Defeated, Postponed }
+enum UnitCondition { FullStrength, HalfStrength, Defeated, Postponed }
 
 class Unit {
-  // immutable
-  String id;
-  String name;
-  UnitType unitType;
-  UnitSize size;
-  Faction faction;
-  int fullStrength;
-  int halfStrength;
-  int movement;
+  final String id;
+  final String name;
+  final UnitType unitType;
+  final UnitSize size;
+  final Faction faction;
+  final int fullStrength;
+  final int halfStrength;
+  final int movement;
 
-  // mutable
-  HexPosition position;
-  UnitStatus status;
+  UnitCondition condition;
+
+  Unit({
+    this.id,
+    this.name,
+    this.unitType,
+    this.size,
+    this.faction,
+    this.fullStrength,
+    this.halfStrength,
+    this.movement,
+    this.condition,
+  });
 }
