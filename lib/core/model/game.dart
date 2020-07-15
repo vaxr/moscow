@@ -19,6 +19,9 @@ enum Phase {
 class Game {
   int turn;
   Phase phase;
+}
+
+class Table {
   Board board;
   UnitStore units;
 }
