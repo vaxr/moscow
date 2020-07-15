@@ -1,5 +1,5 @@
-import 'package:moscow/model/player.dart';
-import 'package:moscow/model/units.dart';
+import 'package:moscow/core/model/player.dart';
+import 'package:moscow/core/model/units.dart';
 
 class UnitsFactory {
   Set<Unit> makeSovietForces() => {

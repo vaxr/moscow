@@ -1,7 +1,7 @@
-import 'package:moscow/map/grid.dart';
-import 'package:moscow/model/player.dart';
-import 'package:moscow/model/units.dart';
-import 'package:moscow/util/quiver/bimap.dart';
+import 'package:moscow/core/map/grid.dart';
+import 'package:moscow/core/model/player.dart';
+import 'package:moscow/core/model/units.dart';
+import 'package:moscow/core/util/quiver/bimap.dart';
 
 const lastTurn = 7;
 

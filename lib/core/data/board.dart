@@ -3,9 +3,9 @@
  * Edge coordinates: hex * 10 + 1 (northwest), 2 (north), or 3 (northeast)
  */
 
-import 'package:moscow/map/grid.dart';
-import 'package:moscow/model/game.dart';
-import 'package:moscow/model/player.dart';
+import 'package:moscow/core/map/grid.dart';
+import 'package:moscow/core/model/game.dart';
+import 'package:moscow/core/model/player.dart';
 
 
 final SovietSetupHexes = {

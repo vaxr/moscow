@@ -1,4 +1,4 @@
-import 'package:moscow/model/player.dart';
+import 'package:moscow/core/model/player.dart';
 
 enum UnitType { Infantry, Panzer }
 enum UnitSize { Corps, Army }

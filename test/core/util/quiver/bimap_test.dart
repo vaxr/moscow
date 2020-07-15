@@ -1,5 +1,4 @@
-import 'package:moscow/map/grid.dart';
-import 'package:moscow/util/quiver/bimap.dart';
+import 'package:moscow/core/util/quiver/bimap.dart';
 import 'package:test/test.dart';
 
 void main() {

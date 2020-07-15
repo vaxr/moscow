@@ -1,4 +1,4 @@
-import 'package:moscow/map/grid.dart';
+import 'package:moscow/core/map/grid.dart';
 import 'package:test/test.dart';
 
 void main() {
