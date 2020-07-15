@@ -3,12 +3,10 @@
  * Edge coordinates: hex * 10 + 1 (northwest), 2 (north), or 3 (northeast)
  */
 
-import 'package:moscow_rules/map/grid.dart';
+import 'package:moscow/map/grid.dart';
+import 'package:moscow/model/game.dart';
+import 'package:moscow/model/player.dart';
 
-const WesternEdgeX = 1;
-const EasternEdgeX = 16;
-const NorthernEdgeY = 1;
-const SouthernEdgeY = 10;
 
 final SovietSetupHexes = {
   Hex(3, 1),
@@ -52,17 +50,17 @@ final GermanSetupHexes = {
 };
 
 final CityHexes = {
-  Hex(2, 4): 'Smolensk',
-  Hex(3, 7): 'Roslavl',
-  Hex(5, 9): 'Bryansk',
-  Hex(6, 1): 'Rzhev',
-  Hex(6, 3): 'Vyazma',
-  Hex(8, 3): 'Mozhaisk',
-  Hex(8, 5): 'Kaluga',
-  Hex(8, 9): 'Orel',
-  Hex(11, 3): 'Moscow',
-  Hex(11, 7): 'Tula',
-  Hex(14, 5): 'Ryazan',
+  Hex(2, 4): City('Smolensk', holder: Faction.German),
+  Hex(3, 7): City('Roslavl', holder: Faction.German),
+  Hex(5, 9): City('Bryansk'),
+  Hex(6, 1): City('Rzhev'),
+  Hex(6, 3): City('Vyazma'),
+  Hex(8, 3): City('Mozhaisk'),
+  Hex(8, 5): City('Kaluga'),
+  Hex(8, 9): City('Orel'),
+  Hex(11, 3): City('Moscow'),
+  Hex(11, 7): City('Tula'),
+  Hex(14, 5): City('Ryazan'),
 };
 
 final FortificationHexes = {

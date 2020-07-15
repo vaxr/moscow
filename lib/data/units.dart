@@ -1,5 +1,5 @@
-import 'package:moscow_rules/model/player.dart';
-import 'package:moscow_rules/model/units.dart';
+import 'package:moscow/model/player.dart';
+import 'package:moscow/model/units.dart';
 
 class UnitsFactory {
   Set<Unit> makeSovietForces() => {
@@ -56,7 +56,7 @@ class UnitsFactory {
         fullStrength: 8,
         halfStrength: 4,
         movement: 4,
-        condition: UnitCondition.HalfStrength,
+        isHalved: true,
       );
 
   Unit makeSovietShock(String id, String name) => Unit(
@@ -68,7 +68,7 @@ class UnitsFactory {
         fullStrength: 10,
         halfStrength: 5,
         movement: 4,
-        condition: UnitCondition.Postponed,
+        isHalved: false,
       );
 
   Unit makeGermanInfantry(
@@ -82,7 +82,7 @@ class UnitsFactory {
         fullStrength: fullStrength,
         halfStrength: halfStrength,
         movement: 4,
-        condition: UnitCondition.FullStrength,
+        isHalved: false,
       );
 
   Unit makeGermanPanzer(
@@ -96,6 +96,6 @@ class UnitsFactory {
         fullStrength: fullStrength,
         halfStrength: halfStrength,
         movement: 6,
-        condition: UnitCondition.FullStrength,
+        isHalved: false,
       );
 }

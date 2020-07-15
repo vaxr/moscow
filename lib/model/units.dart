@@ -1,8 +1,7 @@
-import 'package:moscow_rules/model/player.dart';
+import 'package:moscow/model/player.dart';
 
 enum UnitType { Infantry, Panzer }
 enum UnitSize { Corps, Army }
-enum UnitCondition { FullStrength, HalfStrength, Defeated, Postponed }
 
 class Unit {
   final String id;
@@ -14,7 +13,9 @@ class Unit {
   final int halfStrength;
   final int movement;
 
-  UnitCondition condition;
+  bool isHalved;
+
+  int get strength => isHalved ? halfStrength : fullStrength;
 
   Unit({
     this.id,
@@ -25,6 +26,6 @@ class Unit {
     this.fullStrength,
     this.halfStrength,
     this.movement,
-    this.condition,
+    this.isHalved,
   });
 }
