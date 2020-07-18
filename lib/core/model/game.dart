@@ -27,12 +27,12 @@ class Table {
 }
 
 class UnitStore {
-  Map<String, Unit> byId;
-  BiMap<Unit, Hex> positions;
-  Set<Unit> sovietActive;
-  Set<Unit> germanActive;
-  Set<Unit> sovietReserve;
-  Set<Unit> germanReserve;
+  Map<String, Unit> byId = {};
+  BiMap<Unit, Hex> positions = BiMap();
+  Set<Unit> sovietActive = {};
+  Set<Unit> germanActive = {};
+  Set<Unit> sovietReserve = {};
+  Set<Unit> germanReserve = {};
 }
 
 class Board {
@@ -41,13 +41,25 @@ class Board {
   static const NorthernEdgeRow = 1;
   static const SouthernEdgeRow = 10;
 
-  Set<Hex> sovietStartingPositions;
-  Set<Hex> germanStartingPositions;
-  Set<Hex> forest;
-  Set<Hex> fortifications;
-  Set<Edge> rivers;
-  Set<Edge> railroads;
-  BiMap<Hex, City> cities;
+  Set<Hex> sovietStartingPositions = {};
+  Set<Hex> germanStartingPositions = {};
+  Set<Hex> forest = {};
+  Set<Hex> fortifications = {};
+  Set<Edge> rivers = {};
+  Set<Edge> railroads = {};
+  BiMap<Hex, City> cities = BiMap();
+
+  static final Set<Hex> allHexes = _makeAllHexes();
+
+  static Set<Hex> _makeAllHexes() {
+    final result = <Hex>{};
+    for (var col = WesternEdgeCol; col <= EasternEdgeCol; col++) {
+      for (var row = NorthernEdgeRow; row <= SouthernEdgeRow; row++) {
+        result.add(Hex(col, row));
+      }
+    }
+    return result;
+  }
 }
 
 class City {
@@ -55,4 +67,6 @@ class City {
   Faction holder = Faction.Soviet;
 
   City(this.name, {this.holder});
+
+  bool get isMoscow => name == 'Moscow';
 }

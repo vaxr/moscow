@@ -6,8 +6,16 @@
 import 'package:moscow/core/map/grid.dart';
 import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/player.dart';
+import 'package:moscow/core/util/quiver/bimap.dart';
 
-Board makeDefaultBoard() => Board();
+Board makeDefaultBoard() => Board()
+  ..forest = ForestHexes
+  ..fortifications = FortificationHexes
+  ..rivers = RiverEdges
+  ..railroads = RailwayEdges
+  ..cities = (BiMap()..addAll(CityHexes))
+  ..sovietStartingPositions = SovietSetupHexes
+  ..germanStartingPositions = GermanSetupHexes;
 
 final SovietSetupHexes = {
   Hex(3, 1),

@@ -1,7 +1,13 @@
+import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 
 class UnitsFactory {
+  UnitStore makeDefaultUnits() {
+        // TODO
+        return UnitStore();
+  }
+
   Set<Unit> makeSovietForces() => {
         makeSovietInfantry('s3', '3rd Army'),
         makeSovietInfantry('s5', '5th Army'),

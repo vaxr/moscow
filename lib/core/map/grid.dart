@@ -1,3 +1,5 @@
+import 'dart:math';
+
 enum Direction { NorthWest, North, NorthEast, SouthEast, South, SouthWest }
 
 /// Cube coordinates, stolen from
@@ -6,17 +8,18 @@ enum Direction { NorthWest, North, NorthEast, SouthEast, South, SouthWest }
 /// `col` and `row` refer to an even-q hex grid with <1,1> as top left.
 class Hex {
   final int x, y, z;
+  final int col, row;
 
   Hex(col, row)
-      : x = col,
+      : col = col,
+        row = row,
+        x = col,
         y = -col - (row - (col + (col & 1)) ~/ 2),
         z = row - (col + (col & 1)) ~/ 2;
 
-  Hex.fromCube(this.x, this.y, this.z);
-
-  int get col => x;
-
-  int get row => z + (x + (x & 1)) ~/ 2;
+  Hex.fromCube(this.x, this.y, this.z)
+      : col = x,
+        row = z + (x + (x & 1)) ~/ 2;
 
   bool isNeighbor(Hex other) {
     final dx = other.x - x;
@@ -26,12 +29,12 @@ class Hex {
   }
 
   Set<Hex> get neighbors => {
-        Hex.fromCube(x + 1, y - 1, z),
-        Hex.fromCube(x + 1, y, z - 1),
-        Hex.fromCube(x, y + 1, z - 1),
-        Hex.fromCube(x, y - 1, z + 1),
-        Hex.fromCube(x - 1, y + 1, z),
-        Hex.fromCube(x - 1, y, z + 1),
+        Hex.fromCube(x, y + 1, z - 1), // North
+        Hex.fromCube(x + 1, y, z - 1), // NorthEast
+        Hex.fromCube(x + 1, y - 1, z), // SouthEast
+        Hex.fromCube(x, y - 1, z + 1), // South
+        Hex.fromCube(x - 1, y, z + 1), // SouthWest
+        Hex.fromCube(x - 1, y + 1, z), // NorthWest
       };
 
   int distanceTo(Hex other) =>
@@ -64,6 +67,17 @@ class Hex {
 
   @override
   int get hashCode => x.hashCode ^ y.hashCode ^ z.hashCode;
+
+  XY get centerXY => XY.fromCube(x, y, z);
+  
+  List<XY> get outlineXY => [
+    XY.fromCube(x+1/3.0, y+1/3.0, z-2/3.0), // NorthWest
+    XY.fromCube(x+2/3.0, y-1/3.0, z-1/3.0), // NorthEast
+    XY.fromCube(x+1/3.0, y-2/3.0, z+1/3.0), // East
+    XY.fromCube(x-1/3.0, y-1/3.0, z+2/3.0), // SouthEast
+    XY.fromCube(x-2/3.0, y+1/3.0, z+1/3.0), // SouthWest
+    XY.fromCube(x-1/3.0, y+2/3.0, z-1/3.0), // West
+  ];
 }
 
 class Edge {
@@ -108,4 +122,15 @@ class Edge {
 
   @override
   int get hashCode => hex.hashCode ^ direction.hashCode;
+}
+
+class XY {
+  final double x;
+  final double y;
+
+  const XY(this.x, this.y);
+
+  XY.fromCube(x, y, z)
+      : x = 1.5 * x,
+        y = sqrt(3) * (0.5 * x + z);
 }
