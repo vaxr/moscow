@@ -119,10 +119,17 @@ class MapComponent {
       }
       ctx.setLineDash([]);
 
+      // grid
+      ctx.lineWidth = hexSize / 16;
+      ctx.setStrokeColorRgb(0, 0, 0, 0.25);
+      for (final hex in Board.allHexes) {
+        ctx.stroke(_hexPath(hex));
+      }
+
       // cities
       ctx.setStrokeColorRgb(0, 0, 0);
-      ctx.lineWidth = hexSize / 16;
       for (final hex in data.cities.keys) {
+        ctx.lineWidth = hexSize / 16;
         final city = data.cities[hex];
         final center = _transformXY(hex.centerXY);
         final radius = hexSize / (city.isMoscow ? 3 : 5);
@@ -135,13 +142,15 @@ class MapComponent {
         ctx.arc(center.x, center.y, radius, 0, 2 * pi);
         ctx.fill();
         ctx.stroke();
-      }
 
-      // grid
-      ctx.lineWidth = hexSize / 16;
-      ctx.setStrokeColorRgb(0, 0, 0, 0.25);
-      for (final hex in Board.allHexes) {
-        ctx.stroke(_hexPath(hex));
+        ctx.setFillColorRgb(255, 255, 255);
+        ctx.textAlign = 'center';
+        ctx.font = 'normal ${(radius * 2).round()}px sans-serif';
+        ctx.shadowColor = 'black';
+        ctx.shadowBlur = hexSize / 4;
+        final captionCenter = center + XY(0, radius * 3);
+        ctx.fillText(city.name, captionCenter.x, captionCenter.y);
+        ctx.shadowColor = 'transparent';
       }
     }
   }
