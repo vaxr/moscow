@@ -1,46 +1,61 @@
+/// Math stolen from
+/// <a href="https://www.redblobgames.com/grids/hexagons">this brilliant article</a>.
+
 import 'dart:math';
 
-enum Direction { NorthWest, North, NorthEast, SouthEast, South, SouthWest }
+enum Direction {
+  NorthWest,
+  North,
+  NorthEast,
+  SouthEast,
+  South,
+  SouthWest,
+  East,
+  West
+}
 
-/// Cube coordinates, stolen from
-/// <a href="https://www.redblobgames.com/grids/hexagons">this brilliant article</a>.
-///
-/// `col` and `row` refer to an even-q hex grid with <1,1> as top left.
 class Hex {
-  final int x, y, z;
-  final int col, row;
+  final CubeCoords cube;
+  final EvenQCoords offset;
 
   Hex(col, row)
-      : col = col,
-        row = row,
-        x = col,
-        y = -col - (row - (col + (col & 1)) ~/ 2),
-        z = row - (col + (col & 1)) ~/ 2;
+      : cube = CubeCoords.fromEvenQ(EvenQCoords(col, row)),
+        offset = EvenQCoords(col, row);
 
-  Hex.fromCube(this.x, this.y, this.z)
-      : col = x,
-        row = z + (x + (x & 1)) ~/ 2;
+  Hex.fromCube(this.cube) : offset = EvenQCoords.fromCube(cube);
 
   bool isNeighbor(Hex other) {
-    final dx = other.x - x;
-    final dy = other.y - y;
-    final dz = other.z - z;
+    final dx = other.cube.x - cube.x;
+    final dy = other.cube.y - cube.y;
+    final dz = other.cube.z - cube.z;
     return dx + dy + dz == 0 && dx.abs() <= 1 && dy.abs() <= 1 && dz.abs() <= 1;
   }
 
+  static const Map<Direction, CubeCoords> _neighbors = {
+    Direction.North: CubeCoords(0, 1, -1),
+    Direction.NorthEast: CubeCoords(1, 0, -1),
+    Direction.SouthEast: CubeCoords(1, -1, 0),
+    Direction.South: CubeCoords(0, -1, 1),
+    Direction.SouthWest: CubeCoords(-1, 0, 1),
+    Direction.NorthWest: CubeCoords(-1, 1, 0),
+  };
+
   Set<Hex> get neighbors => {
-        Hex.fromCube(x, y + 1, z - 1), // North
-        Hex.fromCube(x + 1, y, z - 1), // NorthEast
-        Hex.fromCube(x + 1, y - 1, z), // SouthEast
-        Hex.fromCube(x, y - 1, z + 1), // South
-        Hex.fromCube(x - 1, y, z + 1), // SouthWest
-        Hex.fromCube(x - 1, y + 1, z), // NorthWest
+        Hex.fromCube(cube + _neighbors[Direction.North]),
+        Hex.fromCube(cube + _neighbors[Direction.NorthEast]),
+        Hex.fromCube(cube + _neighbors[Direction.SouthEast]),
+        Hex.fromCube(cube + _neighbors[Direction.South]),
+        Hex.fromCube(cube + _neighbors[Direction.SouthWest]),
+        Hex.fromCube(cube + _neighbors[Direction.NorthWest]),
       };
 
   int distanceTo(Hex other) =>
-      ((other.x - x).abs() + (other.y - y).abs() + (other.z - z).abs()) ~/ 2;
+      ((other.cube.x - cube.x).abs() +
+          (other.cube.y - cube.y).abs() +
+          (other.cube.z - cube.z).abs()) ~/
+      2;
 
-  static const borderDirectionTable = {
+  static const _borderDirectionTable = {
     '0,1': Direction.North,
     '1,0': Direction.NorthEast,
     '1,-1': Direction.SouthEast,
@@ -50,34 +65,43 @@ class Hex {
   };
 
   Direction borderDirection(Hex other) {
-    return borderDirectionTable['${other.x - x},${other.y - y}'];
+    return _borderDirectionTable[
+        '${other.cube.x - cube.x},${other.cube.y - cube.y}'];
   }
 
   @override
-  String toString() => '<$col,$row/$x,$y,$z>';
+  String toString() => '<Hex $offset/$cube>';
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Hex &&
           runtimeType == other.runtimeType &&
-          x == other.x &&
-          y == other.y &&
-          z == other.z;
+          offset.col == other.offset.col &&
+          offset.row == other.offset.row;
 
   @override
-  int get hashCode => x.hashCode ^ y.hashCode ^ z.hashCode;
+  int get hashCode => offset.col.hashCode ^ offset.row.hashCode;
 
-  XY get centerXY => XY.fromCube(x, y, z);
-  
-  List<XY> get outlineXY => [
-    XY.fromCube(x+1/3.0, y+1/3.0, z-2/3.0), // NorthWest
-    XY.fromCube(x+2/3.0, y-1/3.0, z-1/3.0), // NorthEast
-    XY.fromCube(x+1/3.0, y-2/3.0, z+1/3.0), // East
-    XY.fromCube(x-1/3.0, y-1/3.0, z+2/3.0), // SouthEast
-    XY.fromCube(x-2/3.0, y+1/3.0, z+1/3.0), // SouthWest
-    XY.fromCube(x-1/3.0, y+2/3.0, z-1/3.0), // West
-  ];
+  XY get centerXY => XY.fromCube(cube);
+
+  static const Map<Direction, CubeCoords> _corners = {
+    Direction.NorthEast: CubeCoords(1 / 3.0, 1 / 3.0, -2 / 3.0),
+    Direction.East: CubeCoords(2 / 3.0, -1 / 3.0, -1 / 3.0),
+    Direction.SouthEast: CubeCoords(1 / 3.0, -2 / 3.0, 1 / 3.0),
+    Direction.SouthWest: CubeCoords(-1 / 3.0, -1 / 3.0, 2 / 3.0),
+    Direction.West: CubeCoords(-2 / 3.0, 1 / 3.0, 1 / 3.0),
+    Direction.NorthWest: CubeCoords(-1 / 3.0, 2 / 3.0, -1 / 3.0),
+  };
+
+  List<XY> get cornersXY => [
+        XY.fromCube(cube + _corners[Direction.NorthWest]),
+        XY.fromCube(cube + _corners[Direction.NorthEast]),
+        XY.fromCube(cube + _corners[Direction.East]),
+        XY.fromCube(cube + _corners[Direction.SouthEast]),
+        XY.fromCube(cube + _corners[Direction.SouthWest]),
+        XY.fromCube(cube + _corners[Direction.West]),
+      ];
 }
 
 class Edge {
@@ -88,29 +112,58 @@ class Edge {
 
   Edge.fromHex(this.hex, this.direction);
 
-  Edge get canonical {
-    switch (direction) {
-      case Direction.SouthEast:
-        return Edge.fromHex(
-            Hex.fromCube(hex.x + 1, hex.y - 1, hex.z), Direction.NorthWest);
-      case Direction.South:
-        return Edge.fromHex(
-            Hex.fromCube(hex.x, hex.y - 1, hex.z + 1), Direction.North);
-      case Direction.SouthWest:
-        return Edge.fromHex(
-            Hex.fromCube(hex.x - 1, hex.y, hex.z + 1), Direction.NorthEast);
-      default:
-        return this;
-    }
-  }
-
   factory Edge.between(Hex a, Hex b) {
     final border = a.borderDirection(b);
     return border == null ? null : Edge.fromHex(a, border).canonical;
   }
 
+  Edge get canonical {
+    switch (direction) {
+      case Direction.SouthEast:
+        return Edge.fromHex(
+            Hex.fromCube(
+                CubeCoords(hex.cube.x + 1, hex.cube.y - 1, hex.cube.z)),
+            Direction.NorthWest);
+      case Direction.South:
+        return Edge.fromHex(
+            Hex.fromCube(
+                CubeCoords(hex.cube.x, hex.cube.y - 1, hex.cube.z + 1)),
+            Direction.North);
+      case Direction.SouthWest:
+        return Edge.fromHex(
+            Hex.fromCube(
+                CubeCoords(hex.cube.x - 1, hex.cube.y, hex.cube.z + 1)),
+            Direction.NorthEast);
+      default:
+        return this;
+    }
+  }
+
+  List<XY> get cornersXY {
+    final edge = canonical;
+    switch (edge.direction) {
+      case Direction.NorthWest:
+        return [
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.West]),
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
+        ];
+      case Direction.North:
+        return [
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
+        ];
+      case Direction.NorthEast:
+        return [
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
+          XY.fromCube(edge.hex.cube + Hex._corners[Direction.East]),
+        ];
+      default:
+        throw Exception('Unreachable code if Edge.canonical works right');
+    }
+  }
+
   @override
-  String toString() => '$hex/$direction';
+  String toString() => '<Edge $hex/$direction>';
 
   @override
   bool operator ==(Object other) =>
@@ -124,13 +177,47 @@ class Edge {
   int get hashCode => hex.hashCode ^ direction.hashCode;
 }
 
+class EvenQCoords {
+  final int col, row;
+
+  const EvenQCoords(this.col, this.row);
+
+  EvenQCoords.fromCube(CubeCoords c)
+      : col = c.x.round(),
+        row = c.z.round() + (c.x.round() + (c.x.round() & 1)) ~/ 2;
+
+  @override
+  String toString() => '<EvenQ $col,$row>';
+}
+
+class CubeCoords {
+  final num x, y, z;
+
+  const CubeCoords(this.x, this.y, this.z);
+
+  CubeCoords.fromEvenQ(EvenQCoords c)
+      : x = c.col,
+        y = -c.col - (c.row - (c.col + (c.col & 1)) ~/ 2),
+        z = c.row - (c.col + (c.col & 1)) ~/ 2;
+
+  CubeCoords operator +(CubeCoords other) =>
+      CubeCoords(x + other.x, y + other.y, z + other.z);
+
+  @override
+  String toString() => '<Cube $x,$y,$z>';
+}
+
 class XY {
-  final double x;
-  final double y;
+  final double x, y;
 
   const XY(this.x, this.y);
 
-  XY.fromCube(x, y, z)
-      : x = 1.5 * x,
-        y = sqrt(3) * (0.5 * x + z);
+  XY.fromCube(CubeCoords c)
+      : x = 1.5 * c.x,
+        y = sqrt(3) * (0.5 * c.x + c.z);
+
+  XY operator +(XY other) => XY(x + other.x, y + other.y);
+
+  @override
+  String toString() => '<XY $x,$y>';
 }

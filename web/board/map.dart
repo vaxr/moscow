@@ -31,10 +31,10 @@ class MapComponent {
 
   Path2D hexPath(Hex hex) {
     final path = Path2D();
-    final outline = hex.outlineXY;
+    final outline = hex.cornersXY;
     final lastXy = transformXY(outline.last);
     path.moveTo(lastXy.x, lastXy.y);
-    for (final corner in hex.outlineXY) {
+    for (final corner in hex.cornersXY) {
       final xy = transformXY(corner);
       path.lineTo(xy.x, xy.y);
     }
@@ -64,13 +64,24 @@ class MapComponent {
         ctx.fill(hexPath(hex));
       }
 
+      // rivers
+      ctx.setStrokeColorRgb(0, 51, 153);
+      ctx.lineWidth = hexSize / 8;
+      for (final river in data.rivers) {
+        print(river.canonical);
+        print(river.cornersXY);
+        final corners = river.cornersXY.map((xy) => transformXY(xy)).toList();
+        ctx.moveTo(corners[0].x, corners[0].y);
+        ctx.lineTo(corners[1].x, corners[1].y);
+        ctx.stroke();
+      }
+
       // cities
       ctx.setStrokeColorRgb(0, 0, 0);
       ctx.lineWidth = hexSize / 16;
       ctx.setFillColorRgb(255, 0, 0);
       for (final hex in data.cities.keys) {
         final city = data.cities[hex];
-        print(city);
         final center = transformXY(hex.centerXY);
         final radius = hexSize / (city.isMoscow ? 3 : 5);
         ctx.beginPath();
