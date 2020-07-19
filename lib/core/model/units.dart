@@ -3,6 +3,11 @@ import 'package:moscow/core/model/player.dart';
 enum UnitType { Infantry, Panzer }
 enum UnitSize { Corps, Army }
 
+const UnitSizeSymbols = <UnitSize, String>{
+  UnitSize.Corps: 'XXX',
+  UnitSize.Army: 'XXXX',
+};
+
 class Unit {
   final String id;
   final String name;
@@ -13,9 +18,12 @@ class Unit {
   final int halfStrength;
   final int movement;
 
-  bool isHalved;
+  bool isHalved = false;
 
   int get strength => isHalved ? halfStrength : fullStrength;
+
+  // speed will be calculated dynamically according to rules
+  int get speed => movement;
 
   Unit({
     this.id,

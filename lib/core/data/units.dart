@@ -78,7 +78,7 @@ class UnitsFactory {
       );
 
   Unit makeGermanInfantry(
-          String id, String name, int halfStrength, int fullStrength) =>
+          String id, String name, int fullStrength, int halfStrength) =>
       Unit(
         id: id,
         name: name,
@@ -92,7 +92,7 @@ class UnitsFactory {
       );
 
   Unit makeGermanPanzer(
-          String id, String name, int halfStrength, int fullStrength) =>
+          String id, String name, int fullStrength, int halfStrength) =>
       Unit(
         id: id,
         name: name,
