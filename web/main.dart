@@ -11,6 +11,9 @@ void main() {
   ..units = UnitStore();
 
   final canvas = querySelector('#map') as CanvasElement;
-  final mapComponent = MapComponent(canvas);
-  mapComponent.render(table);
+  final mapComponent = MapComponent(canvas, table);
+  mapComponent.highlights = table.board.sovietStartingPositions;
+//  mapComponent.highlights = table.board.germanStartingPositions;
+//  mapComponent.highlights = {};
+  mapComponent.render();
 }

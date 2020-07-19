@@ -107,13 +107,15 @@ class Hex {
     Direction.NorthWest: CubeCoords(-1 / 3.0, 2 / 3.0, -1 / 3.0),
   };
 
+  XY cornerXY(Direction direction) => XY.fromCube(cube + _corners[direction]);
+
   List<XY> get cornersXY => [
-        XY.fromCube(cube + _corners[Direction.NorthWest]),
-        XY.fromCube(cube + _corners[Direction.NorthEast]),
-        XY.fromCube(cube + _corners[Direction.East]),
-        XY.fromCube(cube + _corners[Direction.SouthEast]),
-        XY.fromCube(cube + _corners[Direction.SouthWest]),
-        XY.fromCube(cube + _corners[Direction.West]),
+        cornerXY(Direction.NorthWest),
+        cornerXY(Direction.NorthEast),
+        cornerXY(Direction.East),
+        cornerXY(Direction.SouthEast),
+        cornerXY(Direction.SouthWest),
+        cornerXY(Direction.West),
       ];
 }
 
