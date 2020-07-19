@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:moscow/core/map/grid.dart';
 import 'package:moscow/core/model/game.dart';
+import 'package:moscow/core/model/player.dart';
 
 class MapComponent {
   final CanvasElement canvas;
@@ -117,11 +118,15 @@ class MapComponent {
       // cities
       ctx.setStrokeColorRgb(0, 0, 0);
       ctx.lineWidth = hexSize / 16;
-      ctx.setFillColorRgb(255, 0, 0);
       for (final hex in data.cities.keys) {
         final city = data.cities[hex];
         final center = _transformXY(hex.centerXY);
         final radius = hexSize / (city.isMoscow ? 3 : 5);
+        if (city.holder == Faction.German) {
+          ctx.setFillColorRgb(102, 153, 153);
+        } else {
+          ctx.setFillColorRgb(255, 0, 0);
+        }
         ctx.beginPath();
         ctx.arc(center.x, center.y, radius, 0, 2 * pi);
         ctx.fill();

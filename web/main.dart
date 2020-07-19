@@ -12,8 +12,8 @@ void main() {
 
   final canvas = querySelector('#map') as CanvasElement;
   final mapComponent = MapComponent(canvas, table);
-  mapComponent.highlights = table.board.sovietStartingPositions;
+//  mapComponent.highlights = table.board.sovietStartingPositions;
 //  mapComponent.highlights = table.board.germanStartingPositions;
-//  mapComponent.highlights = {};
+  mapComponent.highlights = {};
   mapComponent.render();
 }
