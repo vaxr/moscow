@@ -12,10 +12,22 @@ Board makeDefaultBoard() => Board()
   ..forest = ForestHexes
   ..fortifications = FortificationHexes
   ..rivers = RiverEdges
-  ..railroads = RailwayEdges
+  ..railroads = _mapRailroads(RailwayEdges)
   ..cities = (BiMap()..addAll(CityHexes))
   ..sovietStartingPositions = SovietSetupHexes
   ..germanStartingPositions = GermanSetupHexes;
+
+Map<Hex, Set<Edge>> _mapRailroads(Set<Edge> railroads) {
+  final result = <Hex, Set<Edge>>{};
+  railroads.addAll(railroads.map((e) => e.flipped));
+  for (final edge in railroads) {
+    if (!result.containsKey(edge.hex)) {
+      result[edge.hex] = <Edge>{};
+    }
+    result[edge.hex].add(edge);
+  }
+  return result;
+}
 
 final SovietSetupHexes = {
   Hex(3, 1),

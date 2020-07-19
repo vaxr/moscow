@@ -65,16 +65,42 @@ class MapComponent {
       }
 
       // rivers
-      ctx.setStrokeColorRgb(0, 51, 153);
+      ctx.setStrokeColorRgb(0, 51, 224);
       ctx.lineWidth = hexSize / 8;
       for (final river in data.rivers) {
-        print(river.canonical);
-        print(river.cornersXY);
         final corners = river.cornersXY.map((xy) => transformXY(xy)).toList();
         ctx.moveTo(corners[0].x, corners[0].y);
         ctx.lineTo(corners[1].x, corners[1].y);
         ctx.stroke();
       }
+
+      // railroads
+      ctx.beginPath();
+      ctx.setStrokeColorRgb(255, 0, 0);
+      ctx.lineWidth = hexSize / 16;
+      const long = hexSize / 3;
+      const short = hexSize / 12;
+      ctx.setLineDash([long, short, short, short, short, short]);
+      for (final hex in data.railroads.keys) {
+        if (!Board.allHexes.contains(hex)) continue;
+        final edges = data.railroads[hex].toList();
+        if (edges.length != 2 || data.cities.containsKey(hex)) {
+          final hexCenter = transformXY(hex.centerXY);
+          for (final edge in edges) {
+            final edgeCenter = transformXY(edge.centerXY);
+            ctx.moveTo(hexCenter.x, hexCenter.y);
+            ctx.lineTo(edgeCenter.x, edgeCenter.y);
+            ctx.stroke();
+          }
+        } else {
+          final fromCenter = transformXY(edges[0].centerXY);
+          final toCenter = transformXY(edges[1].centerXY);
+          ctx.moveTo(fromCenter.x, fromCenter.y);
+          ctx.lineTo(toCenter.x, toCenter.y);
+          ctx.stroke();
+        }
+      }
+      ctx.setLineDash([]);
 
       // cities
       ctx.setStrokeColorRgb(0, 0, 0);

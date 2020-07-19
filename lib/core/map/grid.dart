@@ -14,6 +14,17 @@ enum Direction {
   West
 }
 
+const DirectionFlipped = <Direction, Direction>{
+  Direction.NorthWest: Direction.SouthEast,
+  Direction.North: Direction.South,
+  Direction.NorthEast: Direction.SouthWest,
+  Direction.SouthEast: Direction.NorthWest,
+  Direction.South: Direction.North,
+  Direction.SouthWest: Direction.NorthEast,
+  Direction.East: Direction.West,
+  Direction.West: Direction.East,
+};
+
 class Hex {
   final CubeCoords cube;
   final EvenQCoords offset;
@@ -40,13 +51,15 @@ class Hex {
     Direction.NorthWest: CubeCoords(-1, 1, 0),
   };
 
+  Hex neighbor(Direction border) => Hex.fromCube(cube + _neighbors[border]);
+
   Set<Hex> get neighbors => {
-        Hex.fromCube(cube + _neighbors[Direction.North]),
-        Hex.fromCube(cube + _neighbors[Direction.NorthEast]),
-        Hex.fromCube(cube + _neighbors[Direction.SouthEast]),
-        Hex.fromCube(cube + _neighbors[Direction.South]),
-        Hex.fromCube(cube + _neighbors[Direction.SouthWest]),
-        Hex.fromCube(cube + _neighbors[Direction.NorthWest]),
+        neighbor(Direction.North),
+        neighbor(Direction.NorthEast),
+        neighbor(Direction.SouthEast),
+        neighbor(Direction.South),
+        neighbor(Direction.SouthWest),
+        neighbor(Direction.NorthWest),
       };
 
   int distanceTo(Hex other) =>
@@ -120,24 +133,16 @@ class Edge {
   Edge get canonical {
     switch (direction) {
       case Direction.SouthEast:
-        return Edge.fromHex(
-            Hex.fromCube(
-                CubeCoords(hex.cube.x + 1, hex.cube.y - 1, hex.cube.z)),
-            Direction.NorthWest);
       case Direction.South:
-        return Edge.fromHex(
-            Hex.fromCube(
-                CubeCoords(hex.cube.x, hex.cube.y - 1, hex.cube.z + 1)),
-            Direction.North);
       case Direction.SouthWest:
-        return Edge.fromHex(
-            Hex.fromCube(
-                CubeCoords(hex.cube.x - 1, hex.cube.y, hex.cube.z + 1)),
-            Direction.NorthEast);
+        return flipped;
       default:
         return this;
     }
   }
+
+  Edge get flipped =>
+      Edge.fromHex(hex.neighbor(direction), DirectionFlipped[direction]);
 
   List<XY> get cornersXY {
     final edge = canonical;
@@ -161,6 +166,8 @@ class Edge {
         throw Exception('Unreachable code if Edge.canonical works right');
     }
   }
+
+  XY get centerXY => cornersXY.reduce((a, e) => (a + e) * 0.5);
 
   @override
   String toString() => '<Edge $hex/$direction>';
@@ -217,6 +224,8 @@ class XY {
         y = sqrt(3) * (0.5 * c.x + c.z);
 
   XY operator +(XY other) => XY(x + other.x, y + other.y);
+
+  XY operator *(num scalar) => XY(x * scalar, y * scalar);
 
   @override
   String toString() => '<XY $x,$y>';

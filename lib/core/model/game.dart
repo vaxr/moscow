@@ -46,7 +46,7 @@ class Board {
   Set<Hex> forest = {};
   Set<Hex> fortifications = {};
   Set<Edge> rivers = {};
-  Set<Edge> railroads = {};
+  Map<Hex, Set<Edge>> railroads = {};
   BiMap<Hex, City> cities = BiMap();
 
   static final Set<Hex> allHexes = _makeAllHexes();
