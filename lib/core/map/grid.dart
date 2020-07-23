@@ -96,7 +96,7 @@ class Hex {
   @override
   int get hashCode => offset.col.hashCode ^ offset.row.hashCode;
 
-  XY get centerXY => XY.fromCube(cube);
+  GridXY get centerXY => GridXY.fromCube(cube);
 
   static const Map<Direction, CubeCoords> _corners = {
     Direction.NorthEast: CubeCoords(1 / 3.0, 1 / 3.0, -2 / 3.0),
@@ -107,9 +107,10 @@ class Hex {
     Direction.NorthWest: CubeCoords(-1 / 3.0, 2 / 3.0, -1 / 3.0),
   };
 
-  XY cornerXY(Direction direction) => XY.fromCube(cube + _corners[direction]);
+  GridXY cornerXY(Direction direction) =>
+      GridXY.fromCube(cube + _corners[direction]);
 
-  List<XY> get cornersXY => [
+  List<GridXY> get cornersXY => [
         cornerXY(Direction.NorthWest),
         cornerXY(Direction.NorthEast),
         cornerXY(Direction.East),
@@ -146,30 +147,30 @@ class Edge {
   Edge get flipped =>
       Edge.fromHex(hex.neighbor(direction), DirectionFlipped[direction]);
 
-  List<XY> get cornersXY {
+  List<GridXY> get cornersXY {
     final edge = canonical;
     switch (edge.direction) {
       case Direction.NorthWest:
         return [
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.West]),
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.West]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
         ];
       case Direction.North:
         return [
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
         ];
       case Direction.NorthEast:
         return [
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
-          XY.fromCube(edge.hex.cube + Hex._corners[Direction.East]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
+          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.East]),
         ];
       default:
         throw Exception('Unreachable code if Edge.canonical works right');
     }
   }
 
-  XY get centerXY => cornersXY.reduce((a, e) => (a + e) * 0.5);
+  GridXY get centerXY => cornersXY.reduce((a, e) => (a + e) * 0.5);
 
   @override
   String toString() => '<Edge $hex/$direction>';
@@ -209,25 +210,50 @@ class CubeCoords {
         y = -c.col - (c.row - (c.col + (c.col & 1)) ~/ 2),
         z = c.row - (c.col + (c.col & 1)) ~/ 2;
 
+  CubeCoords.fromXY(GridXY xy)
+      : x = 2 / 3.0 * xy.x,
+        y = -(2 / 3.0 * xy.x) - (-1 / 3.0 * xy.x + sqrt(3) / 3.0 * xy.y),
+        z = -1 / 3.0 * xy.x + sqrt(3) / 3.0 * xy.y;
+
   CubeCoords operator +(CubeCoords other) =>
       CubeCoords(x + other.x, y + other.y, z + other.z);
+
+  CubeCoords get rounded {
+    var roundX = x.round();
+    var roundY = y.round();
+    var roundZ = z.round();
+
+    final dX = (roundX - x).abs();
+    final dY = (roundY - y).abs();
+    final dZ = (roundZ - z).abs();
+
+    if (dX > dY && dX > dZ) {
+      roundX = -roundY - roundZ;
+    } else if (dY > dZ) {
+      roundY = -roundX - roundZ;
+    } else {
+      roundZ = -roundX - roundY;
+    }
+
+    return CubeCoords(roundX, roundY, roundZ);
+  }
 
   @override
   String toString() => '<Cube $x,$y,$z>';
 }
 
-class XY {
+class GridXY {
   final double x, y;
 
-  const XY(this.x, this.y);
+  const GridXY(this.x, this.y);
 
-  XY.fromCube(CubeCoords c)
+  GridXY.fromCube(CubeCoords c)
       : x = 1.5 * c.x,
         y = sqrt(3) * (0.5 * c.x + c.z);
 
-  XY operator +(XY other) => XY(x + other.x, y + other.y);
+  GridXY operator +(GridXY other) => GridXY(x + other.x, y + other.y);
 
-  XY operator *(num scalar) => XY(x * scalar, y * scalar);
+  GridXY operator *(num scalar) => GridXY(x * scalar, y * scalar);
 
   @override
   String toString() => '<XY $x,$y>';
