@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:html';
 import 'dart:math';
 
@@ -20,6 +21,7 @@ class MapComponent {
   MapComponent(this.canvas, this.table) {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
+    onCursorMoved.listen((_) => render());
   }
 
   Table table;
@@ -29,6 +31,16 @@ class MapComponent {
     _highlightedHexes = hexes;
     _redrawHighlights = true;
   }
+
+  final StreamController<Hex> _onCursorMoved =
+      StreamController<Hex>.broadcast();
+
+  Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
+
+  final StreamController<Hex> _onHexClicked =
+      StreamController<Hex>.broadcast();
+
+  Stream<Hex> get onHexClicked => _onHexClicked.stream;
 
   CanvasElement _boardCanvas;
   CanvasElement _unitsCanvas;
@@ -337,7 +349,7 @@ class MapComponent {
       );
     }
   }
-  
+
   Hex _canvasToHex(Point p) {
     final gridXY = _canvasToGrid(p);
     final hex = Hex.fromCube(CubeCoords.fromXY(gridXY).rounded);
@@ -351,16 +363,17 @@ class MapComponent {
     if (hex != _cursorHex) {
       _cursorHex = hex;
       _redrawCursor = true;
-      render();
+      _onCursorMoved.add(hex);
     }
   }
 
   void onClick(MouseEvent event) {
-    // TODO
+    final hex = _canvasToHex(event.offset);
+    if (hex != null) {
+      _onHexClicked.add(hex);
+    }
   }
 
-  void onMouseMove(MouseEvent event) {
-    final hex = _canvasToHex(event.offset);
-    _updateCursor(hex);
-  }
+  void onMouseMove(MouseEvent event) =>
+      _updateCursor(_canvasToHex(event.offset));
 }

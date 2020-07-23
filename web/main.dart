@@ -43,4 +43,6 @@ void main() {
 //  mapComponent.highlights = table.board.germanStartingPositions;
   mapComponent.highlights = {};
   mapComponent.render();
+
+  mapComponent.onHexClicked.listen((hex) => print(hex));
 }
