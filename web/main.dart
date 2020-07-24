@@ -18,7 +18,7 @@ void _populateUnits(Table table) {
   final remainingSoviets = table.units.sovietReserve.toList()..shuffle();
   for (final hex in table.board.sovietStartingPositions) {
     final unit = remainingSoviets.removeLast();
-    table.units.positions.inverse[hex] = unit;
+    table.board.units[hex] = unit;
     table.units.sovietReserve.remove(unit);
   }
 
@@ -26,7 +26,7 @@ void _populateUnits(Table table) {
   final remainingGermans = table.units.germanReserve.toList()..shuffle();
   for (final hex in table.board.germanStartingPositions) {
     final unit = remainingGermans.removeLast();
-    table.units.positions.inverse[hex] = unit;
+    table.board.units[hex] = unit;
     table.units.germanReserve.remove(unit);
   }
 }
@@ -38,7 +38,7 @@ void main() {
   _populateUnits(table);
 
   final canvas = querySelector('#map') as CanvasElement;
-  final mapComponent = MapComponent(canvas, table);
+  final mapComponent = MapComponent(canvas, table.board);
 //  mapComponent.highlights = table.board.sovietStartingPositions;
 //  mapComponent.highlights = table.board.germanStartingPositions;
   mapComponent.highlights = {};

@@ -18,13 +18,13 @@ class MapComponent {
   double offsetY = 0;
   double zoom = 1.0;
 
-  MapComponent(this.canvas, this.table) {
+  MapComponent(this.canvas, this.board) {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
     onCursorMoved.listen((_) => render());
   }
 
-  Table table;
+  Board board;
   Set<Hex> _highlightedHexes;
 
   set highlights(Set<Hex> hexes) {
@@ -89,7 +89,6 @@ class MapComponent {
     if (redrawBoard) {
       redrawBoard = false;
       final ctx = _boardCanvas.context2D;
-      final data = table.board;
 
       // background
       ctx.setFillColorRgb(0, 32, 64);
@@ -103,20 +102,20 @@ class MapComponent {
 
       // forest
       ctx.setFillColorRgb(51, 102, 0);
-      for (final hex in data.forest) {
+      for (final hex in board.forest) {
         ctx.fill(_hexPath(hex));
       }
 
       // fortifications
       ctx.setFillColorRgb(160, 160, 160);
-      for (final hex in data.fortifications) {
+      for (final hex in board.fortifications) {
         ctx.fill(_hexPath(hex));
       }
 
       // rivers
       ctx.setStrokeColorRgb(0, 51, 224);
       ctx.lineWidth = hexSize / 8;
-      for (final river in data.rivers) {
+      for (final river in board.rivers) {
         final corners = river.cornersXY.map((xy) => _gridToLayer(xy)).toList();
         ctx.moveTo(corners[0].x, corners[0].y);
         ctx.lineTo(corners[1].x, corners[1].y);
@@ -130,10 +129,10 @@ class MapComponent {
       const long = hexSize / 3;
       const short = hexSize / 12;
       ctx.setLineDash([long, short, short, short, short, short]);
-      for (final hex in data.railroads.keys) {
+      for (final hex in board.railroads.keys) {
         if (!Board.allHexes.contains(hex)) continue;
-        final edges = data.railroads[hex].toList();
-        if (edges.length != 2 || data.cities.containsKey(hex)) {
+        final edges = board.railroads[hex].toList();
+        if (edges.length != 2 || board.cities.containsKey(hex)) {
           final hexCenter = _gridToLayer(hex.centerXY);
           for (final edge in edges) {
             final edgeCenter = _gridToLayer(edge.centerXY);
@@ -160,9 +159,9 @@ class MapComponent {
 
       // cities
       ctx.setStrokeColorRgb(0, 0, 0);
-      for (final hex in data.cities.keys) {
+      for (final hex in board.cities.keys) {
         ctx.lineWidth = hexSize / 16;
-        final city = data.cities[hex];
+        final city = board.cities[hex];
         final center = _gridToLayer(hex.centerXY);
         final radius = hexSize / (city.isMoscow ? 3 : 5);
         if (city.holder == Faction.German) {
@@ -263,10 +262,9 @@ class MapComponent {
     if (redrawUnits) {
       redrawUnits = false;
       final ctx = _unitsCanvas.context2D;
-      final data = table.units;
 
-      for (final hex in data.positions.inverse.keys) {
-        final unit = data.positions.inverse[hex];
+      for (final hex in board.units.keys) {
+        final unit = board.units[hex];
         _drawUnit(ctx, unit, _gridToLayer(hex.centerXY), hexSize * 1.4);
       }
     }

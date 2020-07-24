@@ -28,7 +28,6 @@ class Table {
 
 class UnitStore {
   Map<String, Unit> byId = {};
-  BiMap<Unit, Hex> positions = BiMap();
   Set<Unit> sovietActive = {};
   Set<Unit> germanActive = {};
   Set<Unit> sovietReserve = {};
@@ -48,6 +47,7 @@ class Board {
   Set<Edge> rivers = {};
   Map<Hex, Set<Edge>> railroads = {};
   BiMap<Hex, City> cities = BiMap();
+  BiMap<Hex, Unit> units = BiMap();
 
   static final Set<Hex> allHexes = _makeAllHexes();
 
