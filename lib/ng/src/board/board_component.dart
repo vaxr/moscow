@@ -2,15 +2,37 @@ import 'dart:async';
 import 'dart:html';
 import 'dart:math';
 
-import 'package:moscow/core/map/grid.dart';
-import 'package:moscow/core/model/game.dart';
-import 'package:moscow/core/model/player.dart';
-import 'package:moscow/core/model/units.dart';
+import 'package:angular/angular.dart';
 
-import 'unit.dart';
+import '../../../core/map/grid.dart';
+import '../../../core/model/game.dart';
+import '../../../core/model/player.dart';
+import '../util/unit.dart';
 
-class BoardComponent {
-  final CanvasElement canvas;
+@Component(
+  selector: 'app-board',
+  styleUrls: ['board_component.css'],
+  templateUrl: 'board_component.html',
+  directives: [],
+  providers: [],
+)
+class BoardComponent implements OnInit {
+  @ViewChild('boardCanvas')
+  CanvasElement canvas;
+
+  @Input()
+  Board board;
+
+  // TODO implement change logic
+
+  @override
+  Future<Null> ngOnInit() async {
+    canvas.onClick.listen(onClick);
+    canvas.onMouseMove.listen(onMouseMove);
+    onCursorMoved.listen((_) => render());
+    render();
+    print(canvas);
+  }
 
   static const hexSize = 64.0;
   static const double boardW = 1600;
@@ -20,13 +42,6 @@ class BoardComponent {
   double offsetY = 0;
   double zoom = 1.0;
 
-  BoardComponent(this.canvas, this.board) {
-    canvas.onClick.listen(onClick);
-    canvas.onMouseMove.listen(onMouseMove);
-    onCursorMoved.listen((_) => render());
-  }
-
-  Board board;
   Set<Hex> _highlightedHexes;
 
   set highlights(Set<Hex> hexes) {
@@ -39,8 +54,7 @@ class BoardComponent {
 
   Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
 
-  final StreamController<Hex> _onHexClicked =
-      StreamController<Hex>.broadcast();
+  final StreamController<Hex> _onHexClicked = StreamController<Hex>.broadcast();
 
   Stream<Hex> get onHexClicked => _onHexClicked.stream;
 
