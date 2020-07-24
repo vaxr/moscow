@@ -7,7 +7,7 @@ import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 
-class MapComponent {
+class BoardComponent {
   final CanvasElement canvas;
 
   static const hexSize = 64.0;
@@ -18,7 +18,7 @@ class MapComponent {
   double offsetY = 0;
   double zoom = 1.0;
 
-  MapComponent(this.canvas, this.board) {
+  BoardComponent(this.canvas, this.board) {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
     onCursorMoved.listen((_) => render());

@@ -5,7 +5,7 @@ import 'package:moscow/core/data/units.dart';
 import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/units.dart';
 
-import 'board/map.dart';
+import 'components/board.dart';
 
 void _populateUnits(Table table) {
   final germans = UnitsFactory().makeGermanForces();
@@ -38,7 +38,7 @@ void main() {
   _populateUnits(table);
 
   final canvas = querySelector('#map') as CanvasElement;
-  final mapComponent = MapComponent(canvas, table.board);
+  final mapComponent = BoardComponent(canvas, table.board);
 //  mapComponent.highlights = table.board.sovietStartingPositions;
 //  mapComponent.highlights = table.board.germanStartingPositions;
   mapComponent.highlights = {};
