@@ -30,7 +30,7 @@ class UnitsFactory {
 
   Set<Unit> makeGermanForces() => {
         makeGermanInfantry('g34', 'XXXIV Army Corps', 4, 2),
-        makeGermanInfantry('g42', 'XLII Army Corps', 4, 2),
+        makeGermanInfantry('g43', 'XLIII Army Corps', 4, 2),
         makeGermanInfantry('g6', 'VI Army Corps', 5, 2),
         makeGermanInfantry('g12', 'XII Army Corps', 5, 2),
         makeGermanInfantry('g5', 'V Army Corps', 6, 3),
@@ -41,9 +41,9 @@ class UnitsFactory {
         makeGermanInfantry('g7', 'VII Army Corps', 7, 4),
         makeGermanInfantry('g8', 'VIII Army Corps', 7, 4),
         makeGermanInfantry('g9', 'IX Army Corps', 7, 4),
-        makeGermanInfantry('g22', 'XXII Army Corps', 8, 4),
+        makeGermanInfantry('g23', 'XXIII Army Corps', 8, 4),
         makeGermanInfantry('g35', 'XXXV Army Corps', 8, 4),
-        makeGermanInfantry('g40', 'XL Panzer Corps', 8, 4),
+        makeGermanPanzer('g40', 'XL Panzer Corps', 8, 4),
         makeGermanPanzer('g48', 'XLVIII Panzer Corps', 8, 4),
         makeGermanPanzer('g47', 'XLVII Panzer Corps', 9, 4),
         makeGermanPanzer('g56', 'LVI Panzer Corps', 9, 4),
