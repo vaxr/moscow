@@ -12,12 +12,12 @@ import '../../../core/model/player.dart';
 @Component(
   selector: 'app-board',
   styleUrls: [],
-  template: '<canvas #boardCanvas width="800" height="600"></canvas>',
+  template: '<canvas #canvas width="800" height="600"></canvas>',
   directives: [],
   providers: [],
 )
-class BoardComponent implements OnInit {
-  @ViewChild('boardCanvas')
+class BoardComponent implements AfterViewInit {
+  @ViewChild('canvas')
   CanvasElement canvas;
 
   @Input()
@@ -30,12 +30,11 @@ class BoardComponent implements OnInit {
   // TODO implement change logic
 
   @override
-  Future<Null> ngOnInit() async {
+  Future<Null> ngAfterViewInit() async {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
     onCursorMoved.listen((_) => render());
     render();
-    print(canvas);
   }
 
   static const hexSize = 64.0;
@@ -46,7 +45,7 @@ class BoardComponent implements OnInit {
   double offsetY = 0;
   double zoom = 1.0;
 
-  Set<Hex> _highlightedHexes;
+  Set<Hex> _highlightedHexes = {};
 
   set highlights(Set<Hex> hexes) {
     _highlightedHexes = hexes;

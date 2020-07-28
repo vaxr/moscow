@@ -7,11 +7,13 @@ import 'package:moscow/core/model/units.dart';
 class UnitRenderer {
   void draw(
       CanvasRenderingContext2D ctx, Unit unit, Point center, double size) {
+    center = Point<double>(center.x, center.y);
+
     // square
     ctx.setStrokeColorRgb(64, 64, 64);
     ctx.setFillColorRgb(224, 224, 224);
     ctx.lineWidth = size / 32;
-    final squareTopLeft = center + Point(-size / 2, -size / 2);
+    final squareTopLeft = center + Point<double>(-size / 2, -size / 2);
     ctx.beginPath();
     ctx.rect(squareTopLeft.x, squareTopLeft.y, size, size);
     ctx.fill();
@@ -27,7 +29,7 @@ class UnitRenderer {
     ctx.lineWidth = size / 24;
     final symbolW = 0.7 * size;
     final symbolH = symbolW / 1.5;
-    final symbolTopLeft = center + Point(-symbolW / 2, -symbolH * 0.6);
+    final symbolTopLeft = center + Point<double>(-symbolW / 2, -symbolH * 0.6);
     ctx.beginPath();
     ctx.rect(symbolTopLeft.x, symbolTopLeft.y, symbolW, symbolH);
     ctx.fill();
@@ -65,7 +67,7 @@ class UnitRenderer {
     ctx.textAlign = 'center';
     // header
     final headerText = UnitSizeSymbols[unit.size];
-    final headerCenter = center + Point(0, -size * 0.32);
+    final headerCenter = center + Point<double>(0, -size * 0.32);
     ctx.font = 'normal bold ${(size * 0.15).round()}px sans-serif';
     ctx.fillText(headerText, headerCenter.x, headerCenter.y);
     // footer
@@ -74,7 +76,7 @@ class UnitRenderer {
       strength += '/${unit.fullStrength}';
     }
     final footerText = '$strength - ${unit.speed}';
-    final footerCenter = center + Point(0, size * 0.44);
+    final footerCenter = center + Point<double>(0, size * 0.44);
     ctx.font = 'normal bold ${(size * 0.26).round()}px sans-serif';
     ctx.fillText(footerText, footerCenter.x, footerCenter.y);
   }
