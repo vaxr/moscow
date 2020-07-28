@@ -3,11 +3,11 @@ import 'dart:html';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 
 import '../../../core/map/grid.dart';
 import '../../../core/model/game.dart';
 import '../../../core/model/player.dart';
-import '../util/unit.dart';
 
 @Component(
   selector: 'app-board',
@@ -22,6 +22,10 @@ class BoardComponent implements OnInit {
 
   @Input()
   Board board;
+
+  UnitRenderer _unitRenderer;
+
+  BoardComponent(this._unitRenderer);
 
   // TODO implement change logic
 
@@ -210,7 +214,8 @@ class BoardComponent implements OnInit {
 
       for (final hex in board.units.keys) {
         final unit = board.units[hex];
-        drawUnit(ctx, unit, _gridToLayer(hex.centerXY), hexSize * 1.4);
+        _unitRenderer.draw(
+            ctx, unit, _gridToLayer(hex.centerXY), hexSize * 1.4);
       }
     }
   }
