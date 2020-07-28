@@ -3,7 +3,7 @@ import 'package:moscow/core/model/game.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/util/table_service.dart';
 
-import 'src/board/board_component.dart';
+import 'src/board/board.component.dart';
 
 // AngularDart info: https://angulardart.dev
 // Components info: https://angulardart.dev/components

@@ -11,8 +11,8 @@ import '../../../core/model/player.dart';
 
 @Component(
   selector: 'app-board',
-  styleUrls: ['board_component.css'],
-  templateUrl: 'board_component.html',
+  styleUrls: [],
+  template: '<canvas #boardCanvas width="800" height="600"></canvas>',
   directives: [],
   providers: [],
 )
