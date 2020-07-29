@@ -1,5 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:moscow/core/model/game.dart';
+import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/unit/unit.component.dart';
 import 'package:moscow/ng/src/util/table_service.dart';
@@ -19,8 +20,9 @@ import 'src/board/board.component.dart';
   directives: [
     BoardComponent,
     UnitComponent,
+    ReserveComponent,
   ],
 )
 class AppComponent {
-  Table get table => TableService().makeTable();
+  Table table = TableService().makeTable();
 }

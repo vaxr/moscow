@@ -15,20 +15,23 @@ class TableService {
       table.units.byId = {for (var u in all) u.id: u};
 
       table.units.sovietReserve.addAll(soviets);
+      table.units.sovietReserve.removeWhere((u) => u.id == 's1');
       final remainingSoviets = table.units.sovietReserve.toList()..shuffle();
       for (final hex in table.board.sovietStartingPositions) {
         final unit = remainingSoviets.removeLast();
         table.board.units[hex] = unit;
         table.units.sovietReserve.remove(unit);
+        table.units.sovietActive.add(unit);
       }
 
       table.units.germanReserve.addAll(germans);
-      final remainingGermans = table.units.germanReserve.toList()..shuffle();
-      for (final hex in table.board.germanStartingPositions) {
-        final unit = remainingGermans.removeLast();
-        table.board.units[hex] = unit;
-        table.units.germanReserve.remove(unit);
-      }
+//      final remainingGermans = table.units.germanReserve.toList()..shuffle();
+//      for (final hex in table.board.germanStartingPositions) {
+//        final unit = remainingGermans.removeLast();
+//        table.board.units[hex] = unit;
+//        table.units.germanReserve.remove(unit);
+//        table.units.germanActive.add(unit);
+//      }
     }
 
     final table = Table()
