@@ -12,7 +12,7 @@ import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
   directives: [],
   providers: [],
 )
-class UnitComponent implements AfterViewInit {
+class UnitComponent implements AfterViewInit, AfterChanges {
 
   @ViewChild('canvas')
   CanvasElement canvas;
@@ -38,5 +38,10 @@ class UnitComponent implements AfterViewInit {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     final center = Point(canvas.width / 2.0, canvas.height / 2.0);
     _unitRenderer.draw(ctx, unit, center, size.toDouble());
+  }
+
+  @override
+  void ngAfterChanges() {
+    _render();
   }
 }

@@ -16,14 +16,14 @@ import '../../../core/model/player.dart';
   directives: [],
   providers: [],
 )
-class BoardComponent implements AfterViewInit {
+class BoardComponent implements AfterViewInit, AfterChanges {
   @ViewChild('canvas')
   CanvasElement canvas;
 
   @Input()
   Board board;
 
-  UnitRenderer _unitRenderer;
+  final UnitRenderer _unitRenderer;
 
   BoardComponent(this._unitRenderer);
 
@@ -33,8 +33,8 @@ class BoardComponent implements AfterViewInit {
   Future<Null> ngAfterViewInit() async {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
-    onCursorMoved.listen((_) => render());
-    render();
+    onCursorMoved.listen((_) => _render());
+    _render();
   }
 
   static const hexSize = 64.0;
@@ -47,6 +47,7 @@ class BoardComponent implements AfterViewInit {
 
   Set<Hex> _highlightedHexes = {};
 
+  @Input()
   set highlights(Set<Hex> hexes) {
     _highlightedHexes = hexes;
     _redrawHighlights = true;
@@ -258,7 +259,7 @@ class BoardComponent implements AfterViewInit {
     _cursorCanvas ??= _makeCanvas();
     if (_redrawCursor) {
       _redrawCursor = false;
-      final ctx = _highlightCanvas.context2D;
+      final ctx = _cursorCanvas.context2D;
       ctx.clearRect(0, 0, _cursorCanvas.width, _cursorCanvas.height);
       if (_cursorHex == null) return;
 
@@ -271,7 +272,7 @@ class BoardComponent implements AfterViewInit {
     }
   }
 
-  void render() {
+  void _render() {
     _renderBoard();
     _renderUnits();
     _renderHighlights();
@@ -323,4 +324,9 @@ class BoardComponent implements AfterViewInit {
 
   void onMouseMove(MouseEvent event) =>
       _updateCursor(_canvasToHex(event.offset));
+
+  @override
+  void ngAfterChanges() {
+    _render();
+  }
 }
