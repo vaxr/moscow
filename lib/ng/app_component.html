@@ -1,7 +1,14 @@
 <h1>Battle for Moscow</h1>
 
 <div id="table">
-    <app-reserve [units]="table.units.germanReserve"></app-reserve>
+    <app-reserve [units]="table.units.germanReserve"
+                 (onSelect)="selectReserve($event)"
+                 (onHover)="hoverReserve($event)"
+    ></app-reserve>
     <app-board [board]="table.board" [highlights]="table.board.germanStartingPositions"></app-board>
-    <app-reserve [units]="table.units.sovietReserve"></app-reserve>
+    <app-reserve [units]="table.units.sovietReserve"
+                 [disabled]="true"
+                 (onSelect)="selectReserve($event)"
+                 (onHover)="hoverReserve($event)"
+    ></app-reserve>
 </div>

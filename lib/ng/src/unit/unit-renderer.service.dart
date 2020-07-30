@@ -1,17 +1,28 @@
 import 'dart:html';
 import 'dart:math';
 
+import 'package:angular_components/utils/color/color.dart';
 import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 
 class UnitRenderer {
-  void draw(
-      CanvasRenderingContext2D ctx, Unit unit, Point center, double size) {
+
+  static final Color colorBack = Color.fromHex('#cccccc');
+  static final Color colorBackHighlight = Color.fromHex('#ffffff');
+  static final Color colorFrame = Color.fromRgb(64, 64, 64);
+  static final Color colorFrameHighlight = Color.fromHex('#ffffff');
+  static final Color colorNatoGerman = Color.fromRgb(102, 153, 153);
+  static final Color colorNatoSoviet = Color.fromRgb(204, 153, 0);
+
+  void draw(CanvasRenderingContext2D ctx, Unit unit, Point center, double size,
+      {Color backColor, Color frameColor}) {
+    backColor ??= colorBack;
+    frameColor ??= colorFrame;
     center = Point<double>(center.x, center.y);
 
     // square
-    ctx.setStrokeColorRgb(64, 64, 64);
-    ctx.setFillColorRgb(224, 224, 224);
+    ctx.setStrokeColorRgb(frameColor.red, frameColor.green, frameColor.blue);
+    ctx.setFillColorRgb(backColor.red, backColor.green, backColor.blue);
     ctx.lineWidth = size / 32;
     final squareTopLeft = center + Point<double>(-size / 2, -size / 2);
     ctx.beginPath();
@@ -21,10 +32,9 @@ class UnitRenderer {
 
     // unit symbol
     ctx.setStrokeColorRgb(0, 0, 0);
-    if (unit.faction == Faction.German) {
-      ctx.setFillColorRgb(102, 153, 153);
-    } else {
-      ctx.setFillColorRgb(204, 153, 0);
+    {
+      final color = unit.faction == Faction.German ? colorNatoGerman : colorNatoSoviet;
+      ctx.setFillColorRgb(color.red, color.green, color.blue);
     }
     ctx.lineWidth = size / 24;
     final symbolW = 0.7 * size;

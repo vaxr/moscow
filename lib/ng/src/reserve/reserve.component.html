@@ -1,1 +1,6 @@
-<app-unit *ngFor="let unit of unitsByStrength" [unit]="unit"></app-unit>
+<app-unit *ngFor="let unit of unitsByStrength"
+          [unit]="unit"
+          [selected]="unit == selected"
+          (onClick)="click($event)"
+          (onHover)="hover($event)"
+></app-unit>

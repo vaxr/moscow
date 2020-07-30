@@ -1,5 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:moscow/core/model/game.dart';
+import 'package:moscow/core/model/units.dart';
 import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/unit/unit.component.dart';
@@ -25,4 +26,12 @@ import 'src/board/board.component.dart';
 )
 class AppComponent {
   Table table = TableService().makeTable();
+
+  void selectReserve(Unit unit) {
+    print('$unit selected');
+  }
+
+  void hoverReserve(Unit unit) {
+    print('$unit hovered');
+  }
 }

@@ -36,4 +36,7 @@ class Unit {
     this.movement,
     this.isHalved,
   });
+
+  @override
+  String toString() => '<Unit $id>';
 }
