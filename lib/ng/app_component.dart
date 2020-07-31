@@ -1,5 +1,7 @@
 import 'package:angular/angular.dart';
+import 'package:moscow/core/map/grid.dart';
 import 'package:moscow/core/model/game.dart';
+import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
@@ -25,6 +27,10 @@ import 'src/board/board.component.dart';
   ],
 )
 class AppComponent implements OnInit {
+
+  @ViewChild('board')
+  BoardComponent board;
+
   Table table;
 
   Unit selectedGermanReserve;
@@ -33,14 +39,35 @@ class AppComponent implements OnInit {
   @override
   void ngOnInit() {
     table = TableService().makeTable();
+    selectBest();
+  }
+
+  void selectBest() {
     selectedGermanReserve = Units.best(table.units.germanReserve);
   }
 
   void selectReserve(Unit unit) {
-    print('$unit selected');
+    if (unit.faction == Faction.Soviet) {
+      selectedSovietReserve = unit;
+    } else {
+      selectedGermanReserve = unit;
+    }
   }
 
   void hoverReserve(Unit unit) {
     print('$unit hovered');
+  }
+
+  void clickHex(Hex hex) {
+    if (!table.board.germanStartingPositions.contains(hex)) return;
+    final displaced = table.units.byHex[hex];
+    if (displaced != null) {
+      table.units.toReserve(displaced);
+      selectReserve(displaced);
+    } else {
+      table.units.toHex(selectedGermanReserve, hex);
+      selectBest();
+    }
+    board.redrawUnits();
   }
 }

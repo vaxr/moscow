@@ -37,8 +37,8 @@ class BoardComponent implements AfterViewInit, AfterChanges {
   Future<Null> ngAfterViewInit() async {
     canvas.onClick.listen(onClick);
     canvas.onMouseMove.listen(onMouseMove);
-    onCursorMoved.listen((_) => _render());
-    _render();
+    onCursorMoved.listen((_) => render());
+    render();
   }
 
   static const hexSize = 64.0;
@@ -57,24 +57,29 @@ class BoardComponent implements AfterViewInit, AfterChanges {
     _redrawHighlights = true;
   }
 
+  @Output()
+  Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
   final StreamController<Hex> _onCursorMoved =
       StreamController<Hex>.broadcast();
 
-  Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
-
-  final StreamController<Hex> _onHexClicked = StreamController<Hex>.broadcast();
-
+  @Output()
   Stream<Hex> get onHexClicked => _onHexClicked.stream;
+  final StreamController<Hex> _onHexClicked = StreamController<Hex>.broadcast();
 
   CanvasElement _boardCanvas;
   CanvasElement _unitsCanvas;
   CanvasElement _highlightCanvas;
   CanvasElement _cursorCanvas;
   bool redrawBoard = true;
-  bool redrawUnits = true;
+  bool _redrawUnits = true;
   bool _redrawHighlights = true;
   bool _redrawCursor = true;
   Hex _cursorHex;
+
+  void redrawUnits() {
+    _redrawUnits = true;
+    render();
+  }
 
   CanvasElement _makeCanvas() {
     final c = canvas.ownerDocument.createElement('canvas') as CanvasElement;
@@ -212,9 +217,10 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   void _renderUnits() {
     _unitsCanvas ??= _makeCanvas();
-    if (redrawUnits) {
-      redrawUnits = false;
+    if (_redrawUnits) {
+      _redrawUnits = false;
       final ctx = _unitsCanvas.context2D;
+      ctx.clearRect(0, 0, _unitsCanvas.width, _unitsCanvas.height);
 
       for (final hex in units.byHex.keys) {
         final unit = units.byHex[hex];
@@ -276,7 +282,7 @@ class BoardComponent implements AfterViewInit, AfterChanges {
     }
   }
 
-  void _render() {
+  void render() {
     _renderBoard();
     _renderUnits();
     _renderHighlights();
@@ -331,6 +337,6 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   @override
   void ngAfterChanges() {
-    _render();
+    render();
   }
 }

@@ -71,9 +71,15 @@ class Units {
       unit.faction == Faction.Soviet ? sovietActive : germanActive;
 
   void toHex(Unit unit, Hex hex) {
-    if (hex == null) {
+    if (unit == null) {
+      return;
+    } else if (hex == null) {
       toReserve(unit);
     } else {
+      final displaced = byHex[hex];
+      if (displaced != null) {
+        toReserve(displaced);
+      }
       _reserve(unit).remove(unit);
       _active(unit).add(unit);
       byHex.inverse.remove(unit);
@@ -97,8 +103,10 @@ class Units {
   @override
   String toString() => '<Units ${byId.keys.join(' ')}>';
 
-  static Unit best(Iterable<Unit> units) =>
-      units.reduce((a, b) => (a ?? b).compareBest(b) >= 0 ? b : a);
+  static Unit best(Iterable<Unit> units) {
+    if (units.isEmpty) return null;
+    return units.reduce((a, b) => (a ?? b).compareBest(b) >= 0 ? b : a);
+  }
 
   static List<Unit> byBest(Iterable<Unit> units) =>
       units.toList()..sort((a, b) => a.compareBest(b));

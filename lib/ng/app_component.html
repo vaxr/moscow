@@ -3,17 +3,19 @@
 <div id="table">
     <app-reserve [units]="table.units.germanReserve"
                  [selected]="selectedGermanReserve"
-                 (selected)="selectReserve($event)"
+                 (selectedChange)="selectReserve($event)"
                  (onHover)="hoverReserve($event)"
     ></app-reserve>
-    <app-board [board]="table.board"
+    <app-board #board
+               [board]="table.board"
                [units]="table.units"
                [highlights]="table.board.germanStartingPositions"
+               (onHexClicked)="clickHex($event)"
     ></app-board>
     <app-reserve [units]="table.units.sovietReserve"
                  [disabled]="true"
                  [selected]="selectedSovietReserve"
-                 (selected)="selectReserve($event)"
+                 (selectedChange)="selectReserve($event)"
                  (onHover)="hoverReserve($event)"
     ></app-reserve>
 </div>
