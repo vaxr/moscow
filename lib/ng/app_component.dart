@@ -24,8 +24,17 @@ import 'src/board/board.component.dart';
     ReserveComponent,
   ],
 )
-class AppComponent {
-  Table table = TableService().makeTable();
+class AppComponent implements OnInit {
+  Table table;
+
+  Unit selectedGermanReserve;
+  Unit selectedSovietReserve;
+
+  @override
+  void ngOnInit() {
+    table = TableService().makeTable();
+    selectedGermanReserve = Units.best(table.units.germanReserve);
+  }
 
   void selectReserve(Unit unit) {
     print('$unit selected');

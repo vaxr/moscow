@@ -23,15 +23,7 @@ class Game {
 
 class Table {
   Board board;
-  UnitStore units;
-}
-
-class UnitStore {
-  Map<String, Unit> byId = {};
-  Set<Unit> sovietActive = {};
-  Set<Unit> germanActive = {};
-  Set<Unit> sovietReserve = {};
-  Set<Unit> germanReserve = {};
+  Units units;
 }
 
 class Board {
@@ -47,7 +39,6 @@ class Board {
   Set<Edge> rivers = {};
   Map<Hex, Set<Edge>> railroads = {};
   BiMap<Hex, City> cities = BiMap();
-  BiMap<Hex, Unit> units = BiMap();
 
   static final Set<Hex> allHexes = _makeAllHexes();
 

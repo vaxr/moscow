@@ -3,6 +3,7 @@ import 'dart:html';
 import 'dart:math';
 
 import 'package:angular/angular.dart';
+import 'package:moscow/core/model/units.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 
 import '../../../core/map/grid.dart';
@@ -22,6 +23,9 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   @Input()
   Board board;
+
+  @Input()
+  Units units;
 
   final UnitRenderer _unitRenderer;
 
@@ -212,8 +216,8 @@ class BoardComponent implements AfterViewInit, AfterChanges {
       redrawUnits = false;
       final ctx = _unitsCanvas.context2D;
 
-      for (final hex in board.units.keys) {
-        final unit = board.units[hex];
+      for (final hex in units.byHex.keys) {
+        final unit = units.byHex[hex];
         _unitRenderer.draw(
             ctx, unit, _gridToLayer(hex.centerXY), hexSize * 1.4);
       }

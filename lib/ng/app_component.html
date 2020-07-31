@@ -2,13 +2,18 @@
 
 <div id="table">
     <app-reserve [units]="table.units.germanReserve"
-                 (onSelect)="selectReserve($event)"
+                 [selected]="selectedGermanReserve"
+                 (selected)="selectReserve($event)"
                  (onHover)="hoverReserve($event)"
     ></app-reserve>
-    <app-board [board]="table.board" [highlights]="table.board.germanStartingPositions"></app-board>
+    <app-board [board]="table.board"
+               [units]="table.units"
+               [highlights]="table.board.germanStartingPositions"
+    ></app-board>
     <app-reserve [units]="table.units.sovietReserve"
                  [disabled]="true"
-                 (onSelect)="selectReserve($event)"
+                 [selected]="selectedSovietReserve"
+                 (selected)="selectReserve($event)"
                  (onHover)="hoverReserve($event)"
     ></app-reserve>
 </div>

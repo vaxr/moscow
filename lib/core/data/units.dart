@@ -3,13 +3,11 @@ import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 
 class UnitsFactory {
-  UnitStore makeDefaultUnits() {
-        // TODO
-        return UnitStore();
-  }
+  Units makeStartingUnits() => Units()
+    ..addAll(UnitsFactory().makeGermanForces())
+    ..addAll(UnitsFactory().makeSovietStartingForces());
 
-  Set<Unit> makeSovietForces() => {
-        makeSovietShock('s01', '1st Shock Army'),
+  Set<Unit> makeSovietStartingForces() => {
         makeSovietInfantry('s03', '3rd Army'),
         makeSovietInfantry('s05', '5th Army'),
         makeSovietInfantry('s10', '10th Army'),
@@ -27,6 +25,9 @@ class UnitsFactory {
         makeSovietInfantry('s49', '49th Army'),
         makeSovietInfantry('s50', '50th Army'),
       };
+
+  Set<Unit> makeSovietForces() =>
+      makeSovietStartingForces()..add(makeSovietShock('s01', '1st Shock Army'));
 
   Set<Unit> makeGermanForces() => {
         makeGermanInfantry('g05', 'V Army Corps', 6, 3),

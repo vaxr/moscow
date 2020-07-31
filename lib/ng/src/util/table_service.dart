@@ -7,37 +7,18 @@ import 'package:moscow/core/model/units.dart';
 @Injectable()
 class TableService {
   Table makeTable() {
-    void _populateUnits(Table table) {
-      final germans = UnitsFactory().makeGermanForces();
-      final soviets = UnitsFactory().makeSovietForces();
-      final all = <Unit>{}..addAll(germans)..addAll(soviets);
-
-      table.units.byId = {for (var u in all) u.id: u};
-
-      table.units.sovietReserve.addAll(soviets);
-      table.units.sovietReserve.removeWhere((u) => u.id == 's1');
-      final remainingSoviets = table.units.sovietReserve.toList()..shuffle();
-      for (final hex in table.board.sovietStartingPositions) {
+    void _deploySoviets(Board board, Units units) {
+      final remainingSoviets = units.sovietReserve.toList()..shuffle();
+      for (final hex in board.sovietStartingPositions) {
         final unit = remainingSoviets.removeLast();
-        table.board.units[hex] = unit;
-        table.units.sovietReserve.remove(unit);
-        table.units.sovietActive.add(unit);
+        units.toHex(unit, hex);
       }
-
-      table.units.germanReserve.addAll(germans);
-//      final remainingGermans = table.units.germanReserve.toList()..shuffle();
-//      for (final hex in table.board.germanStartingPositions) {
-//        final unit = remainingGermans.removeLast();
-//        table.board.units[hex] = unit;
-//        table.units.germanReserve.remove(unit);
-//        table.units.germanActive.add(unit);
-//      }
     }
 
     final table = Table()
       ..board = makeDefaultBoard()
-      ..units = UnitStore();
-    _populateUnits(table);
+      ..units = UnitsFactory().makeStartingUnits();
+    _deploySoviets(table.board, table.units);
     return table;
   }
 }

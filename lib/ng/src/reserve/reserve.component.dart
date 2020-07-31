@@ -24,27 +24,18 @@ class ReserveComponent {
   }
   bool _disabled = false;
 
+  @Input()
+  Unit selected;
+
   @Output()
-  Stream<Unit> get onSelect => _onSelect.stream;
+  Stream<Unit> get selectedChange => _onSelect.stream;
   final _onSelect = StreamController<Unit>();
 
   @Output()
   Stream<Unit> get onHover => _onHover.stream;
   final _onHover = StreamController<Unit>();
 
-  Unit selected;
-
-  List<Unit> get unitsByStrength => units.toList()
-      ..sort((a, b) {
-        var order = b.fullStrength - a.fullStrength;
-        if (order == 0) {
-          order = b.movement - a.movement;
-        }
-        if (order == 0) {
-          order = a.id.compareTo(b.id);
-        }
-        return order;
-      });
+  List<Unit> get unitsByBest => Units.byBest(units);
 
   void click(Unit unit) {
     if (!_disabled && unit != selected) {
