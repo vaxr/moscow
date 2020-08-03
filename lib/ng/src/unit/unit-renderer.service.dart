@@ -17,10 +17,12 @@ class UnitRenderer {
   static final Color colorNatoSoviet = Color.fromRgb(204, 153, 0);
 
   void draw(CanvasRenderingContext2D ctx, Unit unit, Point center, double size,
-      {Color backColor, Color frameColor}) {
+      {Color backColor, Color frameColor, alpha = 1.0}) {
     backColor ??= colorBack;
     frameColor ??= colorFrame;
     center = Point<double>(center.x, center.y);
+    final oldAlpha = ctx.globalAlpha;
+    ctx.globalAlpha = alpha;
 
     // square
     ctx.setStrokeColorRgb(frameColor.red, frameColor.green, frameColor.blue);
@@ -91,5 +93,7 @@ class UnitRenderer {
     final footerCenter = center + Point<double>(0, size * 0.44);
     ctx.font = 'normal bold ${(size * 0.26).round()}px sans-serif';
     ctx.fillText(footerText, footerCenter.x, footerCenter.y);
+
+    ctx.globalAlpha = oldAlpha;
   }
 }

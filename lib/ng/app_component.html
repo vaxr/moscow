@@ -11,6 +11,7 @@
                [units]="table.units"
                [highlightedHexes]="table.board.germanStartingPositions"
                [highlightedUnits]="highlightedUnits"
+               [unitCursor]="unitCursor"
                (onHexClicked)="clickHex($event)"
     ></app-board>
     <app-reserve [units]="table.units.sovietReserve"

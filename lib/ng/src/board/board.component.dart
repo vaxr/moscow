@@ -70,6 +70,14 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   Set<Unit> _highlightedUnits = {};
 
+  @Input()
+  set unitCursor(Unit unit) {
+    _unitCursor = unit;
+    _redrawCursor = true;
+  }
+
+  Unit _unitCursor;
+
   @Output()
   Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
   final StreamController<Hex> _onCursorMoved =
@@ -300,19 +308,26 @@ class BoardComponent implements AfterViewInit, AfterChanges {
       final ctx = _cursorCanvas.context2D;
       ctx.clearRect(0, 0, _cursorCanvas.width, _cursorCanvas.height);
 
-      // hover over units
+      // hover or unit cursor
       if (!hexIsDark(_cursorHex)) {
-        final unit = units.byHex[_cursorHex];
+        final unit = units.byHex[_cursorHex] ?? _unitCursor;
         if (unit != null) {
+          var backColor = UnitRenderer.colorBack;
+          var frameColor = UnitRenderer.colorFrame;
+          if (unit != _unitCursor) {
+            backColor = _highlightedUnits.contains(unit)
+                ? UnitRenderer.colorBackHighlight
+                : UnitRenderer.colorBack;
+            frameColor = UnitRenderer.colorFrameHighlight;
+          }
           _unitRenderer.draw(
             ctx,
             unit,
             _gridToLayer(_cursorHex.centerXY),
             hexSize * 1.4,
-            backColor: _highlightedUnits.contains(unit)
-                ? UnitRenderer.colorBackHighlight
-                : UnitRenderer.colorBack,
-            frameColor: UnitRenderer.colorFrameHighlight,
+            backColor: backColor,
+            frameColor: frameColor,
+            alpha: unit == _unitCursor ? 0.7 : 1.0,
           );
         }
       }

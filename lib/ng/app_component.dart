@@ -10,9 +10,6 @@ import 'package:moscow/ng/src/util/table_service.dart';
 
 import 'src/board/board.component.dart';
 
-// AngularDart info: https://angulardart.dev
-// Components info: https://angulardart.dev/components
-
 @Component(
   selector: 'my-app',
   styleUrls: ['app_component.css'],
@@ -35,22 +32,23 @@ class AppComponent implements OnInit {
   Unit selectedGermanReserve;
   Unit selectedSovietReserve;
   Set<Unit> highlightedUnits = {};
+  Unit unitCursor;
 
   @override
   void ngOnInit() {
     table = TableService().makeTable();
     selectBest();
 
-    final unitList = table.units.byId.values.toList();
-    for (var i = 0; i < unitList.length; i++) {
-      if (i % 3 == 0) {
-        highlightedUnits.add(unitList[i]);
-      }
-    }
+//    final unitList = table.units.byId.values.toList();
+//    for (var i = 0; i < unitList.length; i++) {
+//      if (i % 3 == 0) {
+//        highlightedUnits.add(unitList[i]);
+//      }
+//    }
   }
 
   void selectBest() {
-    selectedGermanReserve = Units.best(table.units.germanReserve);
+    selectReserve(Units.best(table.units.germanReserve));
   }
 
   void selectReserve(Unit unit) {
@@ -59,6 +57,7 @@ class AppComponent implements OnInit {
     } else {
       selectedGermanReserve = unit;
     }
+    unitCursor = unit;
   }
 
   void hoverReserve(Unit unit) {
