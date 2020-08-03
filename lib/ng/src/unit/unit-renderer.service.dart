@@ -9,8 +9,10 @@ class UnitRenderer {
 
   static final Color colorBack = Color.fromHex('#cccccc');
   static final Color colorBackHighlight = Color.fromHex('#ffffff');
+  static final Color colorBackDark = Color.fromHex('#999999');
   static final Color colorFrame = Color.fromRgb(64, 64, 64);
   static final Color colorFrameHighlight = Color.fromHex('#ffffff');
+  static final Color colorFrameDark = Color.fromRgb(32, 32, 32);
   static final Color colorNatoGerman = Color.fromRgb(102, 153, 153);
   static final Color colorNatoSoviet = Color.fromRgb(204, 153, 0);
 

@@ -9,7 +9,8 @@
     <app-board #board
                [board]="table.board"
                [units]="table.units"
-               [highlights]="table.board.germanStartingPositions"
+               [highlightedHexes]="table.board.germanStartingPositions"
+               [highlightedUnits]="highlightedUnits"
                (onHexClicked)="clickHex($event)"
     ></app-board>
     <app-reserve [units]="table.units.sovietReserve"

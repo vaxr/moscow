@@ -49,13 +49,26 @@ class BoardComponent implements AfterViewInit, AfterChanges {
   double offsetY = 0;
   double zoom = 1.0;
 
-  Set<Hex> _highlightedHexes = {};
-
   @Input()
-  set highlights(Set<Hex> hexes) {
+  set highlightedHexes(Set<Hex> hexes) {
     _highlightedHexes = hexes;
     _redrawHighlights = true;
   }
+
+  Set<Hex> _highlightedHexes = {};
+
+  bool hexIsDark(Hex hex) =>
+      _highlightedHexes != null &&
+      _highlightedHexes.isNotEmpty &&
+      !_highlightedHexes.contains(hex);
+
+  @Input()
+  set highlightedUnits(Set<Unit> units) {
+    _highlightedUnits = units;
+    _redrawUnits = true;
+  }
+
+  Set<Unit> _highlightedUnits = {};
 
   @Output()
   Stream<Hex> get onCursorMoved => _onCursorMoved.stream;
@@ -78,6 +91,7 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   void redrawUnits() {
     _redrawUnits = true;
+    _redrawCursor = true;
     render();
   }
 
@@ -224,8 +238,22 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
       for (final hex in units.byHex.keys) {
         final unit = units.byHex[hex];
+        var backColor = UnitRenderer.colorBack;
+        var frameColor = UnitRenderer.colorFrame;
+        if (_highlightedUnits?.contains(unit) ?? false) {
+          backColor = UnitRenderer.colorBackHighlight;
+        } else if (!(_highlightedHexes?.contains(hex) ?? false)) {
+          backColor = UnitRenderer.colorBackDark;
+          frameColor = UnitRenderer.colorFrameDark;
+        }
         _unitRenderer.draw(
-            ctx, unit, _gridToLayer(hex.centerXY), hexSize * 1.4);
+          ctx,
+          unit,
+          _gridToLayer(hex.centerXY),
+          hexSize * 1.4,
+          backColor: backColor,
+          frameColor: frameColor,
+        );
       }
     }
   }
@@ -271,14 +299,23 @@ class BoardComponent implements AfterViewInit, AfterChanges {
       _redrawCursor = false;
       final ctx = _cursorCanvas.context2D;
       ctx.clearRect(0, 0, _cursorCanvas.width, _cursorCanvas.height);
-      if (_cursorHex == null) return;
 
-      ctx.lineWidth = hexSize / 16;
-      ctx.setStrokeColorRgb(255, 255, 255);
-      ctx.setFillColorRgb(255, 255, 255, 0.5);
-      final path = _hexPath(_cursorHex);
-      ctx.fill(path);
-      ctx.stroke(path);
+      // hover over units
+      if (!hexIsDark(_cursorHex)) {
+        final unit = units.byHex[_cursorHex];
+        if (unit != null) {
+          _unitRenderer.draw(
+            ctx,
+            unit,
+            _gridToLayer(_cursorHex.centerXY),
+            hexSize * 1.4,
+            backColor: _highlightedUnits.contains(unit)
+                ? UnitRenderer.colorBackHighlight
+                : UnitRenderer.colorBack,
+            frameColor: UnitRenderer.colorFrameHighlight,
+          );
+        }
+      }
     }
   }
 
@@ -290,8 +327,8 @@ class BoardComponent implements AfterViewInit, AfterChanges {
     final ctx = canvas.context2D;
     for (final src in [
       _boardCanvas,
-      _unitsCanvas,
       _highlightCanvas,
+      _unitsCanvas,
       _cursorCanvas,
     ]) {
       ctx.drawImageScaledFromSource(

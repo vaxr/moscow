@@ -27,7 +27,6 @@ import 'src/board/board.component.dart';
   ],
 )
 class AppComponent implements OnInit {
-
   @ViewChild('board')
   BoardComponent board;
 
@@ -35,11 +34,19 @@ class AppComponent implements OnInit {
 
   Unit selectedGermanReserve;
   Unit selectedSovietReserve;
+  Set<Unit> highlightedUnits = {};
 
   @override
   void ngOnInit() {
     table = TableService().makeTable();
     selectBest();
+
+    final unitList = table.units.byId.values.toList();
+    for (var i = 0; i < unitList.length; i++) {
+      if (i % 3 == 0) {
+        highlightedUnits.add(unitList[i]);
+      }
+    }
   }
 
   void selectBest() {
