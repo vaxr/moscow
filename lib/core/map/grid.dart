@@ -258,3 +258,27 @@ class GridXY {
   @override
   String toString() => '<XY $x,$y>';
 }
+
+class Hexes {
+  static Set<Set<Hex>> connectedGroups(Set<Hex> hexes) {
+    final remaining = Set<Hex>.from(hexes);
+    final result = <Set<Hex>>{};
+    while (remaining.isNotEmpty) {
+      final group = <Hex>{};
+      final unexplored = <Hex>{remaining.first};
+      while (unexplored.isNotEmpty) {
+        final hex = unexplored.first;
+        unexplored.remove(hex);
+        remaining.remove(hex);
+        group.add(hex);
+        for (final neighbor in hex.neighbors) {
+          if (remaining.contains(neighbor)) {
+            unexplored.add(neighbor);
+          }
+        }
+      }
+      result.add(group);
+    }
+    return result;
+  }
+}

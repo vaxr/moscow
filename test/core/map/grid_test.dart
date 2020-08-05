@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:moscow/core/data/board.dart';
 import 'package:moscow/core/map/grid.dart';
 import 'package:test/test.dart';
 
@@ -141,5 +143,32 @@ void main() {
       exp(Edge(6, 6, Direction.SouthWest), Edge(5, 7, Direction.NorthEast));
       exp(Edge(6, 6, Direction.NorthWest), Edge(6, 6, Direction.NorthWest));
     });
+  });
+
+  group(Hexes, () {
+    void tt(String caption, Set<Hex> input, Set<Set<Hex>> expected) {
+      test(caption, () {
+        final result = Hexes.connectedGroups(input);
+        if (!DeepCollectionEquality.unordered().equals(result, expected)) {
+          fail('Unequal:\n  Expected $expected\n  Got      $result');
+        }
+      });
+    }
+
+    tt('Soviet starting positions', SovietSetupHexes, {
+      {Hex(3, 1), Hex(3, 2), Hex(3, 3), Hex(3, 4)},
+      {
+        Hex(4, 5),
+        Hex(5, 4),
+        Hex(5, 5),
+        Hex(5, 6),
+        Hex(5, 7),
+        Hex(5, 8),
+        Hex(5, 9),
+        Hex(5, 10)
+      },
+      {Hex(8, 3)},
+    });
+    tt('German starting positions', GermanSetupHexes, {GermanSetupHexes});
   });
 }
