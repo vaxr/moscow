@@ -14,6 +14,15 @@ enum Direction {
   West
 }
 
+const hexDirections = [
+  Direction.North,
+  Direction.NorthEast,
+  Direction.SouthEast,
+  Direction.South,
+  Direction.SouthWest,
+  Direction.NorthWest,
+];
+
 const DirectionFlipped = <Direction, Direction>{
   Direction.NorthWest: Direction.SouthEast,
   Direction.North: Direction.South,
@@ -148,25 +157,76 @@ class Edge {
       Edge.fromHex(hex.neighbor(direction), DirectionFlipped[direction]);
 
   List<GridXY> get cornersXY {
-    final edge = canonical;
-    switch (edge.direction) {
+    switch (direction) {
       case Direction.NorthWest:
         return [
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.West]),
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.West]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.NorthWest]),
         ];
       case Direction.North:
         return [
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthWest]),
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.NorthWest]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.NorthEast]),
         ];
       case Direction.NorthEast:
         return [
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.NorthEast]),
-          GridXY.fromCube(edge.hex.cube + Hex._corners[Direction.East]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.NorthEast]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.East]),
+        ];
+      case Direction.SouthEast:
+        return [
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.East]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.SouthEast]),
+        ];
+      case Direction.South:
+        return [
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.SouthEast]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.SouthWest]),
+        ];
+      case Direction.SouthWest:
+        return [
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.SouthWest]),
+          GridXY.fromCube(hex.cube + Hex._corners[Direction.West]),
         ];
       default:
-        throw Exception('Unreachable code if Edge.canonical works right');
+        throw Exception('Unreachable code');
+    }
+  }
+
+  Set<Edge> get clockwiseNeighbors {
+    switch (direction) {
+      case Direction.North:
+        return {
+          Edge.fromHex(hex, Direction.NorthEast),
+          Edge.fromHex(hex.neighbor(Direction.NorthEast), Direction.NorthWest),
+        };
+      case Direction.NorthEast:
+        return {
+          Edge.fromHex(hex, Direction.SouthEast),
+          Edge.fromHex(hex.neighbor(Direction.SouthEast), Direction.North),
+        };
+      case Direction.SouthEast:
+        return {
+          Edge.fromHex(hex, Direction.South),
+          Edge.fromHex(hex.neighbor(Direction.South), Direction.NorthEast),
+        };
+      case Direction.South:
+        return {
+          Edge.fromHex(hex, Direction.SouthWest),
+          Edge.fromHex(hex.neighbor(Direction.SouthWest), Direction.SouthEast),
+        };
+      case Direction.SouthWest:
+        return {
+          Edge.fromHex(hex, Direction.NorthWest),
+          Edge.fromHex(hex.neighbor(Direction.NorthWest), Direction.South),
+        };
+      case Direction.NorthWest:
+        return {
+          Edge.fromHex(hex, Direction.North),
+          Edge.fromHex(hex.neighbor(Direction.North), Direction.SouthWest),
+        };
+      default:
+        throw Exception('Unreachable code');
     }
   }
 
@@ -260,7 +320,7 @@ class GridXY {
 }
 
 class Hexes {
-  static Set<Set<Hex>> connectedGroups(Set<Hex> hexes) {
+  static Set<Set<Hex>> connectedGroups(Iterable<Hex> hexes) {
     final remaining = Set<Hex>.from(hexes);
     final result = <Set<Hex>>{};
     while (remaining.isNotEmpty) {
@@ -280,5 +340,66 @@ class Hexes {
       result.add(group);
     }
     return result;
+  }
+
+  static List<List<Edge>> borders(Iterable<Hex> connectedHexes) {
+    Set<Edge> borderEdges(Iterable<Hex> hexes) {
+      final result = <Edge>{};
+      for (final hex in hexes) {
+        for (final direction in hexDirections) {
+          if (!hexes.contains(hex.neighbor(direction))) {
+            result.add(Edge.fromHex(hex, direction));
+          }
+        }
+      }
+      return result;
+    }
+
+    Edge northernMostEdge(Iterable<Edge> edges) => edges.reduce((val, elem) {
+      if (elem.direction != Direction.North) return val;
+      elem = elem.canonical;
+      val = val?.canonical ?? elem;
+      var valY = val.hex.offset.row;
+      var elemY = elem.hex.offset.row;
+      if (valY == elemY) {
+        valY -= val.hex.offset.col % 2;
+        elemY -= elem.hex.offset.col % 2;
+      }
+      if (valY == elemY) {
+        valY += val.hex.offset.col;
+        elemY += elem.hex.offset.col;
+      }
+      return valY <= elemY ? val : elem;
+    });
+
+    Edge pickNeighbor(Edge edge, Edge startingEdge, Set<Edge> unexplored) {
+      for (var neighbor in edge.clockwiseNeighbors) {
+        if (neighbor == startingEdge || unexplored.contains(neighbor)) {
+          return neighbor;
+        }
+      }
+      throw StateError('Error in algorithm: no neighbor fits');
+    }
+
+    List<Edge> extractBorder(Set<Edge> unexplored) {
+      final border = <Edge>[];
+      final startingEdge = northernMostEdge(unexplored);
+      var edge = startingEdge;
+      do {
+        border.add(edge);
+        unexplored.remove(edge);
+        edge = pickNeighbor(edge, startingEdge, unexplored);
+      } while (edge != startingEdge);
+      return border;
+    }
+
+    if (connectedHexes?.isEmpty ?? true) return [];
+    var unexplored = borderEdges(connectedHexes);
+    final borders = [extractBorder(unexplored)];
+    unexplored = unexplored.map((edge) => edge.flipped).toSet();
+    while (unexplored.isNotEmpty) {
+      borders.add(extractBorder(unexplored));
+    }
+    return borders;
   }
 }

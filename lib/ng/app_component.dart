@@ -32,6 +32,7 @@ class AppComponent implements OnInit {
   Unit selectedGermanReserve;
   Unit selectedSovietReserve;
   Set<Unit> highlightedUnits = {};
+  Set<Hex> highlightedHexes = {};
   Unit unitCursor;
 
   @override
@@ -39,6 +40,7 @@ class AppComponent implements OnInit {
     table = TableService().makeTable();
     selectBest();
 
+    highlightedHexes = table.board.germanStartingPositions;
 //    final unitList = table.units.byId.values.toList();
 //    for (var i = 0; i < unitList.length; i++) {
 //      if (i % 3 == 0) {

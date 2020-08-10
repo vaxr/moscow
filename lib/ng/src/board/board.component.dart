@@ -125,12 +125,49 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
   Path2D _hexPath(Hex hex) {
     final path = Path2D();
-    final outline = hex.cornersXY;
-    final lastPos = _gridToLayer(outline.last);
-    path.moveTo(lastPos.x, lastPos.y);
-    for (final corner in hex.cornersXY) {
+    final pos1 = _gridToLayer(hex.cornersXY[0]);
+    path.moveTo(pos1.x, pos1.y);
+    for (final corner in hex.cornersXY.skip(1)) {
       final pos = _gridToLayer(corner);
       path.lineTo(pos.x, pos.y);
+    }
+    path.closePath();
+    return path;
+  }
+
+  Path2D _hexesPath(Iterable<Hex> hexes) {
+    final path = Path2D();
+    for (final island in Hexes.connectedGroups(hexes)) {
+      final borders = Hexes.borders(island);
+      if (borders.isNotEmpty) {
+        path.addPath(_borderPath(borders[0], reverse: false));
+      }
+      for (final border in borders.skip(1)) {
+        path.addPath(_borderPath(border, reverse: true));
+      }
+    }
+    return path;
+  }
+
+  Path2D _borderPath(List<Edge> border, {bool reverse: false}) {
+    var points = <Point>[];
+    var lastPoint;
+    for (final edge in border) {
+      var from = _gridToLayer(edge.cornersXY[0]);
+      var to = _gridToLayer(edge.cornersXY[1]);
+      if (lastPoint == null) {
+        points.add(from);
+      }
+      points.add(to);
+    }
+    if (reverse) {
+      points = points.reversed.toList();
+    }
+
+    final path = Path2D();
+    path.moveTo(points[0].x, points[0].y);
+    for (final point in points) {
+      path.lineTo(point.x, point.y);
     }
     return path;
   }
@@ -277,27 +314,13 @@ class BoardComponent implements AfterViewInit, AfterChanges {
 
       final darkHexes =
           Board.allHexes.where((h) => !_highlightedHexes.contains(h));
-      ctx.setFillColorRgb(0, 0, 0, 0.4);
-      for (final hex in darkHexes) {
-        ctx.fill(_hexPath(hex));
-      }
+      ctx.setFillColorRgb(64, 64, 64, 0.7);
+      ctx.fill(_hexesPath(darkHexes));
 
-      ctx.lineWidth = hexSize / 16;
-      ctx.setStrokeColorRgb(255, 255, 255, 0.6);
-      for (final hex in _highlightedHexes) {
-        final north = _gridToLayer(hex.cornerXY(Direction.NorthWest)).y;
-        final south = _gridToLayer(hex.cornerXY(Direction.SouthWest)).y;
-        final west = _gridToLayer(hex.cornerXY(Direction.NorthWest)).x;
-        final east =
-            _gridToLayer(Edge.fromHex(hex, Direction.South).centerXY).x;
-        ctx.fillStyle = ctx.createLinearGradient(west, north, east, south)
-          ..addColorStop(0.00, '#ffffff00')
-          ..addColorStop(0.80, '#ffffff30')
-          ..addColorStop(1.00, '#ffffffb0');
-        final path = _hexPath(hex);
-        ctx.fill(path);
-        ctx.stroke(path);
-      }
+      ctx.lineWidth = hexSize / 12;
+      ctx.setStrokeColorRgb(255, 255, 255, 1.0);
+      final path = _hexesPath(_highlightedHexes);
+      ctx.stroke(path);
     }
   }
 
