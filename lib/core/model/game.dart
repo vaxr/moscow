@@ -6,6 +6,7 @@ import 'package:moscow/core/util/quiver/bimap.dart';
 const lastTurn = 7;
 
 enum Phase {
+  GermanDeployment,
   GermanReplacement,
   GermanPanzer,
   GermanCombat,
@@ -16,15 +17,15 @@ enum Phase {
   SovietMove,
 }
 
-class Game {
+class GameState {
   int turn;
   Phase phase;
-}
-
-class Table {
   Board board;
   Units units;
+  final List<Move> history = [];
 }
+
+class Move {}
 
 class Board {
   static const WesternEdgeCol = 1;

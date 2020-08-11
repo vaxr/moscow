@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:moscow/core/data/board.dart';
+import 'package:moscow/core/game/factory/board.dart';
 import 'package:moscow/core/map/grid.dart';
 import 'package:test/test.dart';
 

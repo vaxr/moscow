@@ -1,12 +1,12 @@
 import 'package:angular/angular.dart';
+import 'package:moscow/core/game/game.dart';
 import 'package:moscow/core/map/grid.dart';
-import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/unit/unit.component.dart';
-import 'package:moscow/ng/src/util/table_service.dart';
+import 'package:moscow/ng/src/util/game_service.dart';
 
 import 'src/board/board.component.dart';
 
@@ -16,6 +16,7 @@ import 'src/board/board.component.dart';
   templateUrl: 'app_component.html',
   providers: [
     UnitRenderer,
+    GameService,
   ],
   directives: [
     BoardComponent,
@@ -27,7 +28,7 @@ class AppComponent implements OnInit {
   @ViewChild('board')
   BoardComponent board;
 
-  Table table;
+  final Game game;
 
   Unit selectedGermanReserve;
   Unit selectedSovietReserve;
@@ -35,22 +36,16 @@ class AppComponent implements OnInit {
   Set<Hex> highlightedHexes = {};
   Unit unitCursor;
 
+  AppComponent(GameService gameService) : game = gameService.game;
+
   @override
   void ngOnInit() {
-    table = TableService().makeTable();
     selectBest();
-
-    highlightedHexes = table.board.germanStartingPositions;
-//    final unitList = table.units.byId.values.toList();
-//    for (var i = 0; i < unitList.length; i++) {
-//      if (i % 3 == 0) {
-//        highlightedUnits.add(unitList[i]);
-//      }
-//    }
+    highlightedHexes = game.state.board.germanStartingPositions;
   }
 
   void selectBest() {
-    selectReserve(Units.best(table.units.germanReserve));
+    selectReserve(Units.best(game.state.units.germanReserve));
   }
 
   void selectReserve(Unit unit) {
@@ -67,13 +62,13 @@ class AppComponent implements OnInit {
   }
 
   void clickHex(Hex hex) {
-    if (!table.board.germanStartingPositions.contains(hex)) return;
-    final displaced = table.units.byHex[hex];
+    if (!game.state.board.germanStartingPositions.contains(hex)) return;
+    final displaced = game.state.units.byHex[hex];
     if (displaced != null) {
-      table.units.toReserve(displaced);
+      game.state.units.toReserve(displaced);
       selectReserve(displaced);
     } else {
-      table.units.toHex(selectedGermanReserve, hex);
+      game.state.units.toHex(selectedGermanReserve, hex);
       selectBest();
     }
     board.redrawUnits();

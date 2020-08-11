@@ -1,20 +1,24 @@
 <h1>Battle for Moscow</h1>
 
+<p>
+    <b>Turn:</b> {{ game.state.turn }}<br>
+    <b>Phase:</b> {{ game.state.phase }}<br>
+</p>
 <div id="table">
-    <app-reserve [units]="table.units.germanReserve"
+    <app-reserve [units]="game.state.units.germanReserve"
                  [selected]="selectedGermanReserve"
                  (selectedChange)="selectReserve($event)"
                  (onHover)="hoverReserve($event)"
     ></app-reserve>
     <app-board #board
-               [board]="table.board"
-               [units]="table.units"
+               [board]="game.state.board"
+               [units]="game.state.units"
                [highlightedHexes]="highlightedHexes"
                [highlightedUnits]="highlightedUnits"
                [unitCursor]="unitCursor"
                (onHexClicked)="clickHex($event)"
     ></app-board>
-    <app-reserve [units]="table.units.sovietReserve"
+    <app-reserve [units]="game.state.units.sovietReserve"
                  [disabled]="true"
                  [selected]="selectedSovietReserve"
                  (selectedChange)="selectReserve($event)"
