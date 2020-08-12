@@ -1,27 +1,32 @@
 <h1>Battle for Moscow</h1>
 
 <p>
-    <b>Turn:</b> {{ game.state.turn }}<br>
-    <b>Phase:</b> {{ game.state.phase }}<br>
+    <b>Turn:</b> {{ model.gameState.turn }}<br>
+    <b>Phase:</b> {{ model.gameState.phase }}<br>
 </p>
 <div id="table">
-    <app-reserve [units]="game.state.units.germanReserve"
-                 [selected]="selectedGermanReserve"
-                 (selectedChange)="selectReserve($event)"
-                 (onHover)="hoverReserve($event)"
+    <app-reserve [units]="model.gameState.units.germanReserve"
+                 [disabled]="model.germanReserveDisabled"
+                 [selected]="model.selectedGermanReserve"
+                 (selectedChange)="game.ctrl.selectReserve($event)"
+                 (onHover)="game.ctrl.hoverReserve($event)"
     ></app-reserve>
     <app-board #board
-               [board]="game.state.board"
-               [units]="game.state.units"
-               [highlightedHexes]="highlightedHexes"
-               [highlightedUnits]="highlightedUnits"
-               [unitCursor]="unitCursor"
-               (onHexClicked)="clickHex($event)"
+               [board]="model.gameState.board"
+               [units]="model.gameState.units"
+               [highlightedHexes]="model.highlightedHexes"
+               [highlightedUnits]="model.highlightedUnits"
+               [unitCursor]="model.unitCursor"
+               (onHexClicked)="game.ctrl.selectHex($event)"
+               (onCursorMoved)="game.ctrl.hoverHex($event)"
     ></app-board>
-    <app-reserve [units]="game.state.units.sovietReserve"
-                 [disabled]="true"
-                 [selected]="selectedSovietReserve"
-                 (selectedChange)="selectReserve($event)"
-                 (onHover)="hoverReserve($event)"
+    <app-reserve [units]="model.gameState.units.sovietReserve"
+                 [disabled]="model.sovietReserveDisabled"
+                 [selected]="model.selectedSovietReserve"
+                 (selectedChange)="game.ctrl.selectReserve($event)"
+                 (onHover)="game.ctrl.hoverReserve($event)"
     ></app-reserve>
 </div>
+<p id="instructions">
+    <span *ngFor="let line of model.instructions">{{ line }}<br></span>
+</p>
