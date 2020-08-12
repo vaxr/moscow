@@ -12,4 +12,9 @@ class UIModel {
   Set<Hex> highlightedHexes = {};
   Unit unitCursor;
   List<String> instructions;
+  DateTime unitsUpdated;
+
+  void updateUnits() {
+    unitsUpdated = DateTime.now();
+  }
 }

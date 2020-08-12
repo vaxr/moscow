@@ -17,6 +17,7 @@
                [highlightedHexes]="model.highlightedHexes"
                [highlightedUnits]="model.highlightedUnits"
                [unitCursor]="model.unitCursor"
+               [unitsUpdated]="model.unitsUpdated"
                (onHexClicked)="game.ctrl.selectHex($event)"
                (onCursorMoved)="game.ctrl.hoverHex($event)"
     ></app-board>

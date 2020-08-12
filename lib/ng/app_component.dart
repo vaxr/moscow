@@ -23,7 +23,7 @@ import 'src/board/board.component.dart';
     ReserveComponent,
   ],
 )
-class AppComponent implements OnInit {
+class AppComponent {
   @ViewChild('board')
   BoardComponent board;
 
@@ -32,9 +32,4 @@ class AppComponent implements OnInit {
   UIModel get model => game.ctrl.model;
 
   AppComponent(GameService gameService) : game = gameService.game;
-
-  @override
-  void ngOnInit() {
-    game.onRedraw.listen((_) => board.redrawUnits());
-  }
 }

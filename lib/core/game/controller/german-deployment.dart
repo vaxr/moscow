@@ -33,7 +33,7 @@ class GermanDeploymentController extends GameController {
       units.toHex(model.selectedGermanReserve, hex);
       _selectBest();
     }
-    redraw();
+    model.updateUnits();
   }
 
   @override

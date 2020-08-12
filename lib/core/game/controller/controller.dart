@@ -19,10 +19,6 @@ abstract class GameController {
 
   Board get board => model.gameState.board;
 
-  void redraw() {
-    game.redraw(model);
-  }
-
   void init();
 
   void selectReserve(Unit unit);

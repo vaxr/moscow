@@ -27,6 +27,11 @@ class BoardComponent implements AfterViewInit, AfterChanges {
   @Input()
   Units units;
 
+  @Input()
+  set unitsUpdated(DateTime _) {
+    _redrawUnits = true;
+  }
+
   final UnitRenderer _unitRenderer;
 
   BoardComponent(this._unitRenderer);
