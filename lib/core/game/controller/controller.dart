@@ -3,7 +3,7 @@ import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/units.dart';
 
 import '../game.dart';
-import '../ui.dart';
+import '../../model/ui.dart';
 
 abstract class GameController {
   final Game game;

@@ -1,6 +1,6 @@
 import 'package:angular/angular.dart';
 import 'package:moscow/core/game/game.dart';
-import 'package:moscow/core/game/ui.dart';
+import 'package:moscow/core/model/ui.dart';
 import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/unit/unit.component.dart';
