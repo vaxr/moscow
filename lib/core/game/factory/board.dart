@@ -19,8 +19,8 @@ Board makeDefaultBoard() => Board()
 
 Map<Hex, Set<Edge>> _mapRailroads(Set<Edge> railroads) {
   final result = <Hex, Set<Edge>>{};
-  railroads.addAll(railroads.map((e) => e.flipped));
-  for (final edge in railroads) {
+  final allEdges = Set.from(railroads)..addAll(railroads.map((e) => e.flipped));
+  for (final edge in allEdges) {
     if (!result.containsKey(edge.hex)) {
       result[edge.hex] = <Edge>{};
     }
