@@ -25,7 +25,17 @@ class GameState {
   final List<Move> history = [];
 }
 
-class Move {}
+class Move {
+  final Map<Unit, Hex> positions = {};
+
+  @override
+  String toString() =>
+      '<Move ' +
+      positions.keys
+          .map((k) => '${k.id} ${positions[k].toColRowString()}')
+          .join(', ') +
+      '>';
+}
 
 class Board {
   static const WesternEdgeCol = 1;

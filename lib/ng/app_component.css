@@ -11,7 +11,7 @@ app-reserve {
     width: 100px;
 }
 
-button#done-button {
+button#end-move-button {
     float: right;
     padding: 0.5em 1em;
 }

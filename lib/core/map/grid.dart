@@ -94,6 +94,8 @@ class Hex {
   @override
   String toString() => '<Hex $offset/$cube>';
 
+  String toColRowString() => '${offset.col}/${offset.row}';
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -356,21 +358,21 @@ class Hexes {
     }
 
     Edge northernMostEdge(Iterable<Edge> edges) => edges.reduce((val, elem) {
-      if (elem.direction != Direction.North) return val;
-      elem = elem.canonical;
-      val = val?.canonical ?? elem;
-      var valY = val.hex.offset.row;
-      var elemY = elem.hex.offset.row;
-      if (valY == elemY) {
-        valY -= val.hex.offset.col % 2;
-        elemY -= elem.hex.offset.col % 2;
-      }
-      if (valY == elemY) {
-        valY += val.hex.offset.col;
-        elemY += elem.hex.offset.col;
-      }
-      return valY <= elemY ? val : elem;
-    });
+          if (elem.direction != Direction.North) return val;
+          elem = elem.canonical;
+          val = val?.canonical ?? elem;
+          var valY = val.hex.offset.row;
+          var elemY = elem.hex.offset.row;
+          if (valY == elemY) {
+            valY -= val.hex.offset.col % 2;
+            elemY -= elem.hex.offset.col % 2;
+          }
+          if (valY == elemY) {
+            valY += val.hex.offset.col;
+            elemY += elem.hex.offset.col;
+          }
+          return valY <= elemY ? val : elem;
+        });
 
     Edge pickNeighbor(Edge edge, Edge startingEdge, Set<Edge> unexplored) {
       for (var neighbor in edge.clockwiseNeighbors) {

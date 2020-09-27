@@ -3,7 +3,7 @@ import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/units.dart';
 
 class UIModel {
-  GameState gameState;
+  final GameState gameState;
   Unit selectedGermanReserve;
   bool germanReserveDisabled = false;
   Unit selectedSovietReserve;
@@ -15,6 +15,8 @@ class UIModel {
   DateTime unitsUpdated;
   bool canEndMove = false;
   bool shouldSkipPhase = false;
+
+  UIModel(this.gameState);
 
   void updateUnits() {
     unitsUpdated = DateTime.now();

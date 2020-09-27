@@ -1,24 +1,27 @@
 import 'package:moscow/core/game/game.dart';
 import 'package:moscow/core/map/grid.dart';
+import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/player.dart';
+import 'package:moscow/core/model/ui.dart';
 import 'package:moscow/core/model/units.dart';
 
 import 'controller.dart';
 
 class GermanDeploymentController extends GameController {
-  GermanDeploymentController(Game game) : super(game);
+  GermanDeploymentController(UIModel model) : super(model);
 
+  final move = Move();
   Set<Hex> startingPositions;
 
   @override
   void init() {
-    model.highlightedHexes = game.state.board.germanStartingPositions;
+    model.highlightedHexes = board.germanStartingPositions;
     model.instructions = [
       'Click highlighted hex to deploy unit',
       'Click deployed unit to withdraw',
       'Click reserve to select a different unit',
     ];
-    startingPositions = game.state.board.germanStartingPositions;
+    startingPositions = board.germanStartingPositions;
     _selectBest();
   }
 
@@ -29,7 +32,9 @@ class GermanDeploymentController extends GameController {
     if (displaced != null) {
       units.toReserve(displaced);
       selectReserve(displaced);
+      move.positions.remove(displaced);
     } else {
+      move.positions[model.selectedGermanReserve] = hex;
       units.toHex(model.selectedGermanReserve, hex);
       _selectBest();
     }
@@ -83,5 +88,10 @@ class GermanDeploymentController extends GameController {
     selectHex(Hex(1, 6));
     selectHex(Hex(1, 7));
     selectHex(Hex(2, 10));
+  }
+
+  @override
+  Move endMove() {
+    return move;
   }
 }

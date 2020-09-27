@@ -1,6 +1,7 @@
 import 'package:moscow/core/game/controller/german-deployment.dart';
 import 'package:moscow/core/game/game.dart';
 import 'package:moscow/core/map/grid.dart';
+import 'package:moscow/core/model/ui.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -10,7 +11,7 @@ void main() {
 
     setUp(() {
       game = Game.newDefaultGame();
-      ctrl = GermanDeploymentController(game);
+      ctrl = GermanDeploymentController(UIModel(game.state));
       game.ctrl = ctrl;
     });
 
@@ -84,6 +85,14 @@ void main() {
       ctrl.selectReserve(toSelect);
 
       expect(ctrl.model.selectedGermanReserve, toSelect);
+    });
+
+    test('endMove generates correct Move', () {
+      ctrl.quickDeploy();
+      final move = ctrl.endMove();
+      for (final unit in game.state.units.germanActive) {
+        expect(move.positions[unit], game.state.units.byHex.inverse[unit]);
+      }
     });
   });
 }

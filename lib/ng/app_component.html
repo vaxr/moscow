@@ -2,7 +2,11 @@
     <h1>Battle for Moscow</h1>
     <p>
         <b>Turn:</b> {{ model.gameState.turn }}<br>
-        <button id="done-button" [attr.disabled]="model.canEndMove ? null : true">Done</button>
+        <button id="end-move-button"
+                [attr.disabled]="model.canEndMove ? null : true"
+                (click)="endMove"
+        >End Move
+        </button>
         <b>Phase:</b> {{ model.gameState.phase }}<br>
     </p>
     <div id="table">

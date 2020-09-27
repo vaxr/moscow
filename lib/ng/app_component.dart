@@ -35,4 +35,8 @@ class AppComponent {
   AppComponent(GameService gameService) : game = gameService.game {
     GameDebugService(game).setup();
   }
+
+  void endMove() {
+    game.endMove();
+  }
 }

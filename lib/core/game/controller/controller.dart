@@ -2,16 +2,12 @@ import 'package:moscow/core/map/grid.dart';
 import 'package:moscow/core/model/game.dart';
 import 'package:moscow/core/model/units.dart';
 
-import '../game.dart';
 import '../../model/ui.dart';
 
 abstract class GameController {
-  final Game game;
-  UIModel model;
+  final UIModel model;
 
-  GameController(this.game) {
-    model = UIModel();
-    model.gameState = game.state;
+  GameController(this.model) {
     init();
   }
 
@@ -20,6 +16,8 @@ abstract class GameController {
   Board get board => model.gameState.board;
 
   void init();
+
+  Move endMove();
 
   void selectReserve(Unit unit);
 
