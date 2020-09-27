@@ -1,5 +1,6 @@
 import 'package:moscow/core/game/controller/german-deployment.dart';
 import 'package:moscow/core/game/game.dart';
+import 'package:moscow/core/map/grid.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,16 +14,33 @@ void main() {
       game.ctrl = ctrl;
     });
 
-    test('can happily deploy a real game in order', () {
+    test('can happily deploy a real game in order and end move', () {
       expect(game.state.units.germanReserve.length, 22);
 
       final positions = game.state.board.germanStartingPositions.toList();
       final startingUnits = game.state.units.germanReserve.length;
       for (var i = 0; i < startingUnits; i++) {
+        expect(ctrl.model.canEndMove, false);
         ctrl.selectHex(positions[i]);
       }
 
       expect(game.state.units.germanReserve.length, 0);
+      expect(ctrl.model.canEndMove, true);
+    });
+
+    test('can use quick deployment and end move', () {
+      expect(game.state.units.germanReserve.length, 22);
+      ctrl.quickDeploy();
+      expect(game.state.units.germanReserve.length, 0);
+      expect(ctrl.model.canEndMove, true);
+    });
+
+    test('Removing a unit from full deployment blocks end move', () {
+      ctrl.quickDeploy();
+      expect(ctrl.model.canEndMove, true);
+
+      ctrl.selectHex(game.state.board.germanStartingPositions.first);
+      expect(ctrl.model.canEndMove, false);
     });
 
     test('clicking an empty starting position places selected unit there', () {
@@ -42,7 +60,6 @@ void main() {
       final hex = game.state.board.germanStartingPositions.first;
       ctrl.selectHex(hex);
       final reservesBefore = game.state.units.germanReserve.length;
-      final selectedReserveBefore = ctrl.model.selectedGermanReserve;
       final placedUnit = game.state.units.byHex[hex];
 
       ctrl.selectHex(hex);

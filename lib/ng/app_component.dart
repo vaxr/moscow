@@ -4,6 +4,7 @@ import 'package:moscow/core/model/ui.dart';
 import 'package:moscow/ng/src/reserve/reserve.component.dart';
 import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 import 'package:moscow/ng/src/unit/unit.component.dart';
+import 'package:moscow/ng/src/util/game_debug_service.dart';
 import 'package:moscow/ng/src/util/game_service.dart';
 
 import 'src/board/board.component.dart';
@@ -31,5 +32,7 @@ class AppComponent {
 
   UIModel get model => game.ctrl.model;
 
-  AppComponent(GameService gameService) : game = gameService.game;
+  AppComponent(GameService gameService) : game = gameService.game {
+    GameDebugService(game).setup();
+  }
 }

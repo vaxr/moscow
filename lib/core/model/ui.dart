@@ -13,6 +13,8 @@ class UIModel {
   Unit unitCursor;
   List<String> instructions;
   DateTime unitsUpdated;
+  bool canEndMove = false;
+  bool shouldSkipPhase = false;
 
   void updateUnits() {
     unitsUpdated = DateTime.now();

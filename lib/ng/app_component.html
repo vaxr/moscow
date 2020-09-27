@@ -1,33 +1,35 @@
-<h1>Battle for Moscow</h1>
-
-<p>
-    <b>Turn:</b> {{ model.gameState.turn }}<br>
-    <b>Phase:</b> {{ model.gameState.phase }}<br>
-</p>
-<div id="table">
-    <app-reserve [units]="model.gameState.units.germanReserve"
-                 [disabled]="model.germanReserveDisabled"
-                 [selected]="model.selectedGermanReserve"
-                 (selectedChange)="game.ctrl.selectReserve($event)"
-                 (onHover)="game.ctrl.hoverReserve($event)"
-    ></app-reserve>
-    <app-board #board
-               [board]="model.gameState.board"
-               [units]="model.gameState.units"
-               [highlightedHexes]="model.highlightedHexes"
-               [highlightedUnits]="model.highlightedUnits"
-               [unitCursor]="model.unitCursor"
-               [unitsUpdated]="model.unitsUpdated"
-               (onHexClicked)="game.ctrl.selectHex($event)"
-               (onCursorMoved)="game.ctrl.hoverHex($event)"
-    ></app-board>
-    <app-reserve [units]="model.gameState.units.sovietReserve"
-                 [disabled]="model.sovietReserveDisabled"
-                 [selected]="model.selectedSovietReserve"
-                 (selectedChange)="game.ctrl.selectReserve($event)"
-                 (onHover)="game.ctrl.hoverReserve($event)"
-    ></app-reserve>
+<div style="width: fit-content">
+    <h1>Battle for Moscow</h1>
+    <p>
+        <b>Turn:</b> {{ model.gameState.turn }}<br>
+        <button id="done-button" [attr.disabled]="model.canEndMove ? null : true">Done</button>
+        <b>Phase:</b> {{ model.gameState.phase }}<br>
+    </p>
+    <div id="table">
+        <app-reserve [units]="model.gameState.units.germanReserve"
+                     [disabled]="model.germanReserveDisabled"
+                     [selected]="model.selectedGermanReserve"
+                     (selectedChange)="game.ctrl.selectReserve($event)"
+                     (onHover)="game.ctrl.hoverReserve($event)"
+        ></app-reserve>
+        <app-board #board
+                   [board]="model.gameState.board"
+                   [units]="model.gameState.units"
+                   [highlightedHexes]="model.highlightedHexes"
+                   [highlightedUnits]="model.highlightedUnits"
+                   [unitCursor]="model.unitCursor"
+                   [unitsUpdated]="model.unitsUpdated"
+                   (onHexClicked)="game.ctrl.selectHex($event)"
+                   (onCursorMoved)="game.ctrl.hoverHex($event)"
+        ></app-board>
+        <app-reserve [units]="model.gameState.units.sovietReserve"
+                     [disabled]="model.sovietReserveDisabled"
+                     [selected]="model.selectedSovietReserve"
+                     (selectedChange)="game.ctrl.selectReserve($event)"
+                     (onHover)="game.ctrl.hoverReserve($event)"
+        ></app-reserve>
+    </div>
+    <p id="instructions">
+        <span *ngFor="let line of model.instructions">{{ line }}<br></span>
+    </p>
 </div>
-<p id="instructions">
-    <span *ngFor="let line of model.instructions">{{ line }}<br></span>
-</p>
