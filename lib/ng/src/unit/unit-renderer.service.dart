@@ -2,7 +2,6 @@ import 'dart:html';
 import 'dart:math';
 
 import 'package:angular_components/utils/color/color.dart';
-import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 
 class UnitRenderer {

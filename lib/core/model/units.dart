@@ -1,6 +1,17 @@
 import 'package:moscow/core/map/grid.dart';
-import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/util/quiver/bimap.dart';
+
+class Faction {
+  static const Faction German = Faction('German');
+  static const Faction Soviet = Faction('Soviet');
+
+  final description;
+
+  const Faction(this.description);
+
+  @override
+  String toString() => description;
+}
 
 enum UnitType { Infantry, Panzer }
 enum UnitSize { Corps, Army }

@@ -8,7 +8,6 @@ import 'package:moscow/ng/src/unit/unit-renderer.service.dart';
 
 import '../../../core/map/grid.dart';
 import '../../../core/model/game.dart';
-import '../../../core/model/player.dart';
 
 @Component(
   selector: 'app-board',

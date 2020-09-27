@@ -1,20 +1,38 @@
+import 'dart:math';
+
 import 'package:moscow/core/map/grid.dart';
-import 'package:moscow/core/model/player.dart';
 import 'package:moscow/core/model/units.dart';
 import 'package:moscow/core/util/quiver/bimap.dart';
 
 const lastTurn = 7;
 
-enum Phase {
-  GermanDeployment,
-  GermanReplacement,
-  GermanPanzer,
-  GermanCombat,
-  GermanMove,
-  SovietReplacement,
-  SovietRails,
-  SovietCombat,
-  SovietMove,
+class Phase {
+  static final Phase GermanDeployment = Phase(0, Faction.German, 'Deployment');
+  static final Phase GermanReplacement =
+      Phase(1, Faction.German, 'Replacement');
+  static final Phase GermanPanzer = Phase(2, Faction.German, 'Panzer');
+  static final Phase GermanCombat = Phase(3, Faction.German, 'Combat');
+  static final Phase GermanMove = Phase(4, Faction.German, 'Movement');
+  static final Phase SovietReplacement =
+      Phase(5, Faction.German, 'Replacement');
+  static final Phase SovietRails = Phase(6, Faction.German, 'Railway');
+  static final Phase SovietCombat = Phase(7, Faction.German, 'Combat');
+  static final Phase SovietMove = Phase(8, Faction.German, 'Movement');
+
+  static final nr = <int, Phase>{};
+  static int maxNr = 0;
+
+  final order;
+  final faction;
+  final description;
+
+  Phase(this.order, this.faction, this.description) {
+    nr[order] = this;
+    maxNr = max(maxNr, order);
+  }
+
+  @override
+  String toString() => '$faction $description';
 }
 
 class GameState {
